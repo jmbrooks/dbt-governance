@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "dbt-governance"
+version = "0.1.0"
+description = "A flexible governance tool for dbt projects, enabling teams to define and enforce custom rules for data quality, privacy, security, and compliance. Supports single and multi-project configurations, with integrations for local development and future compatibility with dbt Cloud. Includes features for metadata validation, test coverage checks, and rule-based governance health reporting."
+authors = ["Johnathan Brooks <19945186+jmbrooks@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+# Compatible Python versions
+python = "^3.10"
+# Project dependencies
+dbt-core = "^1.6"
+jsonschema = "^4.19"
+pyyaml = "^6.0"
+
+[tool.poetry.group.dev.dependencies]
+bandit = "^1.7"
+black = "^23.9"
+pre-commit = "^3.4"
+pytest = "^7.1.2"
+pytest-cov = "^3.0"
+ruff = "^0.1"
+tox = "^4.5"
+
+[tool.poetry.scripts]
+dbt-governance = "dbt_governance.cli:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+
+[tool.bandit]
+exclude_dirs = ["data_build/", "logs/", "tests/", "env/", "venv/", "*venv/", ".env", ".env.*", ".git", ".tox/"]
+
+[tool.black]
+line-length = 120
+target-version = ['py36', 'py37', 'py38']
+include = '\.pyi?$'
