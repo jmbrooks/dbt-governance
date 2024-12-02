@@ -29,8 +29,6 @@ dbt-governance = "dbt_governance.cli:cli"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-
-
 [tool.bandit]
 exclude_dirs = ["data_build/", "logs/", "tests/", "env/", "venv/", "*venv/", ".env", ".env.*", ".git", ".tox/"]
 
