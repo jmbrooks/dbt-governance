@@ -110,8 +110,4 @@ target/
 .vscode/
 *.code-workspace
 
-# poetry
-poetry.lock
-
-# asdf
 .tool-versions
