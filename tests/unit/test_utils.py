@@ -1,9 +1,11 @@
-import pytest
 import json
 import re
-import dbt_governance.utils as utils
 from datetime import datetime, timezone
 from pathlib import Path
+
+import pytest
+
+import dbt_governance.utils as utils
 
 
 def test_get_utc_iso_timestamp() -> None:

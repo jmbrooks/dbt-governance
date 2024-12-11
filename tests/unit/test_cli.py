@@ -1,18 +1,19 @@
-from click.testing import CliRunner
 from pathlib import Path
 from unittest.mock import patch
 
+from click.testing import CliRunner
+
 import dbt_governance.constants as constants
 from dbt_governance import __version__
-from dbt_governance.structures.governance_rule import GovernanceRule
+from dbt_governance.cli import cli as dbt_governance_cli
 from dbt_governance.structures.governance_result import (
     GovernanceResult,
     GovernanceResultMetadata,
     GovernanceResultSummary,
 )
+from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.severity import Severity
 from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
-from dbt_governance.cli import cli as dbt_governance_cli
 
 
 def test_version_option() -> None:

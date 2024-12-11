@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Optional
 
-from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.severity import Severity
 
 

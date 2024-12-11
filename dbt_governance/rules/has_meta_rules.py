@@ -37,14 +37,16 @@ def has_meta_property(
             if isinstance(meta_property_allowed_values, str):
                 meta_property_allowed_values = [meta_property_allowed_values]
             if model_meta_property in meta_property_allowed_values:
-                results.append(ValidationResult(
-                    rule_name=rule.name,
-                    rule_severity=rule.severity,
-                    dbt_project_path=project_path,
-                    resource_type=node.resource_type,
-                    unique_id=node.unique_id,
-                    status=ValidationStatus.PASSED,
-                ))
+                results.append(
+                    ValidationResult(
+                        rule_name=rule.name,
+                        rule_severity=rule.severity,
+                        dbt_project_path=project_path,
+                        resource_type=node.resource_type,
+                        unique_id=node.unique_id,
+                        status=ValidationStatus.PASSED,
+                    )
+                )
             else:
                 results.append(
                     ValidationResult(
@@ -59,14 +61,16 @@ def has_meta_property(
                     )
                 )
         if model_meta_property:
-            results.append(ValidationResult(
-                rule_name=rule.name,
-                rule_severity=rule.severity,
-                dbt_project_path=project_path,
-                resource_type=node.resource_type,
-                unique_id=node.unique_id,
-                status=ValidationStatus.PASSED,
-            ))
+            results.append(
+                ValidationResult(
+                    rule_name=rule.name,
+                    rule_severity=rule.severity,
+                    dbt_project_path=project_path,
+                    resource_type=node.resource_type,
+                    unique_id=node.unique_id,
+                    status=ValidationStatus.PASSED,
+                )
+            )
         else:
             results.append(
                 ValidationResult(

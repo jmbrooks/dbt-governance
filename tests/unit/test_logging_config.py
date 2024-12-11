@@ -1,14 +1,15 @@
-import os
 import logging
+import os
+
 from dbt_governance.logging_config import (
-    logger,
-    LOG_DIR,
     DEBUG_LOG_FILE,
     ERROR_LOG_FILE,
+    LOG_DIR,
     LOG_FORMAT,
     green,
-    yellow,
+    logger,
     red,
+    yellow,
 )
 
 

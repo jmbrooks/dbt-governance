@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from dbt_governance.structures.governance_rule import GovernanceRule
@@ -8,6 +8,7 @@ from dbt_governance.structures.severity import Severity
 @dataclass
 class PassRateAcceptanceThresholdsConfig:
     """Represents the pass rate acceptance thresholds for governance rules."""
+
     overall: Optional[float]
     critical: Optional[float]
     high: Optional[float]
@@ -28,6 +29,7 @@ class PassRateAcceptanceThresholdsConfig:
 @dataclass
 class RuleEvaluationConfig:
     """"""
+
     default_severity: str = Severity.default_rule_severity()
     pass_rate_acceptance_thresholds: Optional[PassRateAcceptanceThresholdsConfig] = None
 
@@ -43,6 +45,7 @@ class RuleEvaluationConfig:
 @dataclass
 class GovernanceRulesConfig:
     """Represents the configuration for governance rules."""
+
     rule_evaluation_config: RuleEvaluationConfig
     rules: List[GovernanceRule]
 

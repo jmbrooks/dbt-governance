@@ -5,7 +5,10 @@ from dbt_governance.structures.validation_result import ValidationResult, Valida
 
 
 def model_owner_rule(
-    rule, manifest, project_path: str, owner_meta_property_name: Optional[str] = None,
+    rule,
+    manifest,
+    project_path: str,
+    owner_meta_property_name: Optional[str] = None,
 ) -> List[ValidationResult]:
     """Validate that all dbt models specify a meta property for model ownership (default 'owner').
 
@@ -31,15 +34,17 @@ def model_owner_rule(
         # Check for the 'owner' meta property
         owner = node.config.meta.get(owner_meta_property_name)
         if owner:
-            results.append(ValidationResult(
-                rule_name=rule.name,
-                rule_severity=rule.severity,
-                dbt_project_path=project_path,
-                resource_type=node.resource_type,
-                unique_id=node.unique_id,
-                status=ValidationStatus.PASSED,
-                reason=None,
-            ))
+            results.append(
+                ValidationResult(
+                    rule_name=rule.name,
+                    rule_severity=rule.severity,
+                    dbt_project_path=project_path,
+                    resource_type=node.resource_type,
+                    unique_id=node.unique_id,
+                    status=ValidationStatus.PASSED,
+                    reason=None,
+                )
+            )
         else:
             results.append(
                 ValidationResult(

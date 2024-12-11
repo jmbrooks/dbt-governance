@@ -102,11 +102,13 @@ def check(project_path: str, project_paths: List[str], rules_file: str, severity
                 pass_rate_display = green(f"{pass_rate:.2f}%") if threshold_met else red(f"{pass_rate:.2f}%")
                 click.echo(
                     f"  {severity.capitalize()} Severity - Passed: {passed}, Evaluated: {evaluated}, Pass Rate: "
-                    f"{pass_rate_display} ({threshold_met_comparison} acceptance threshold of {threshold}%)")
+                    f"{pass_rate_display} ({threshold_met_comparison} acceptance threshold of {threshold}%)"
+                )
             else:
                 click.echo(
                     f"  {severity.capitalize()} - Passed: {passed}, Evaluated: {evaluated}, Pass Rate: "
-                    f"{pass_rate:.2f}% (No threshold set)")
+                    f"{pass_rate:.2f}% (No threshold set)"
+                )
 
     click.echo("\nGovernance Check Results:")
 
@@ -124,11 +126,13 @@ def check(project_path: str, project_paths: List[str], rules_file: str, severity
         if overall_threshold is not None:
             threshold_met = overall_pass_rate >= overall_threshold
             comparison = "meets" if threshold_met else "below"
-            pass_rate_display = green(f"{overall_pass_rate:.2f}%") if threshold_met \
-                else red(f"{overall_pass_rate:.2f}%")
+            pass_rate_display = (
+                green(f"{overall_pass_rate:.2f}%") if threshold_met else red(f"{overall_pass_rate:.2f}%")
+            )
             click.echo(
                 f"\nOverall - Pass Rate: {pass_rate_display} ({comparison} overall acceptance threshold of "
-                f"{overall_threshold}%)")
+                f"{overall_threshold}%)"
+            )
         else:
             click.echo(f"  Overall - Pass Rate: {overall_pass_rate:.2f} (No threshold set)")
         if governance_evaluation.summary.total_evaluations == governance_evaluation.summary.total_passed:

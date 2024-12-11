@@ -15,9 +15,9 @@ from dbt_governance.structures.governance_result import (
     GovernanceResultMetadata,
     GovernanceResultSummary,
 )
-from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig, RuleEvaluationConfig
 from dbt_governance.structures.governance_rule import GovernanceRule
-from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
+from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig, RuleEvaluationConfig
+from dbt_governance.structures.validation_result import ValidationStatus
 
 
 def load_global_rules_config(rules_file: str) -> Dict[str, Any]:

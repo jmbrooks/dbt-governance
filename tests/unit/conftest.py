@@ -1,9 +1,10 @@
 import json
 from pathlib import Path
 from typing import Any
-from dbt_governance.dbt_client import DbtClient
 
 import pytest
+
+from dbt_governance.dbt_client import DbtClient
 
 
 @pytest.fixture

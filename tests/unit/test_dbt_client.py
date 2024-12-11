@@ -1,9 +1,11 @@
-import pytest
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from dbt_governance.dbt_client import DbtClient
+
+import pytest
 from dbt.contracts.graph.manifest import Manifest
+
+from dbt_governance.dbt_client import DbtClient
 
 
 def test_manifest_loading(dbt_client: DbtClient, mock_manifest_data: dict, tmp_path: Path) -> None:

@@ -51,15 +51,17 @@ def validate_primary_key_rule(rule: GovernanceRule, manifest: Manifest, project_
                 break
 
         if has_primary_key_test:
-            results.append(ValidationResult(
-                rule_name=rule.name,
-                rule_severity=rule.severity,
-                dbt_project_path=project_path,
-                resource_type=model.resource_type,
-                unique_id=model.unique_id,
-                status=ValidationStatus.PASSED,
-                reason=None,
-            ))
+            results.append(
+                ValidationResult(
+                    rule_name=rule.name,
+                    rule_severity=rule.severity,
+                    dbt_project_path=project_path,
+                    resource_type=model.resource_type,
+                    unique_id=model.unique_id,
+                    status=ValidationStatus.PASSED,
+                    reason=None,
+                )
+            )
         else:
             results.append(
                 ValidationResult(

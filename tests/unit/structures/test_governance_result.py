@@ -1,4 +1,5 @@
 import pytest
+
 from dbt_governance.structures.governance_result import (
     GovernanceResult,
     GovernanceResultMetadata,
