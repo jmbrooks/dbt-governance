@@ -12,15 +12,19 @@ python = "^3.10"
 dbt-core = "^1.6"
 jsonschema = "^4.19"
 pyyaml = "^6.0"
+colorama = "^0.4.6"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7"
 black = "^23.9"
-pre-commit = "^3.4"
-pytest = "^7.1.2"
-pytest-cov = "^3.0"
+isort = "^5.13"
+mypy = "^1.8"
+pre-commit = "^4.0"
+pytest = "^8.3"
+pytest-cov = "^6.0"
 ruff = "^0.1"
 tox = "^4.5"
+types-PyYAML = "^6.0.12.12"
 
 [tool.poetry.scripts]
 dbt-governance = "dbt_governance.cli:cli"
@@ -36,3 +40,32 @@ exclude_dirs = ["data_build/", "logs/", "tests/", "env/", "venv/", "*venv/", ".e
 line-length = 120
 target-version = ['py36', 'py37', 'py38']
 include = '\.pyi?$'
+
+[tool.mypy]
+mypy_path = "./dbt_governance:./tests"
+strict = true
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+warn_unused_ignores = true
+
+[tool.ruff]
+line-length = 120
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "--cov=dbt_governance --cov-report=term-missing --cov-fail-under=90"
+testpaths = [
+    "tests"
+]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "tests/*",
+    "dbt_governance/__init__.py"
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 90
