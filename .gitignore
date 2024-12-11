@@ -28,10 +28,12 @@ var/
 *.egg
 .mypy_cache/
 .dmypy.json
-logs/
-dbt-governance-logs/
 .user.yml
 profiles.yml
+
+*governance-results.json
+dbt-governance-logs/
+logs/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
