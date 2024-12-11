@@ -10,7 +10,17 @@ class Severity(Enum):
         MEDIUM: Failing this rule is of medium governance impact and should be addressed in a timely manner.
         LOW: Failing this rule is of low governance impact and should be addressed as resources allow.
     """
+
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
+
+    def __str__(self) -> str:
+        """Return the value of the Enum for its string representation."""
+        return self.value
+
+    @staticmethod
+    def default_rule_severity() -> str:
+        """Return the default severity for a governance rule."""
+        return Severity.MEDIUM.value
