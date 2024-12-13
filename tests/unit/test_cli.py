@@ -50,7 +50,15 @@ def test_check_command(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> 
     mock_load_rules.return_value = [{"name": "Owner Metadata", "severity": "medium"}]
 
     # Create real GovernanceResult components
-    details = [ValidationResult(rule_name="Owner Metadata", status=ValidationStatus.PASSED, reason=None)]
+    details = [
+        ValidationResult(
+            rule_name="Owner Metadata",
+            status=ValidationStatus.PASSED,
+            dbt_project_path="path/to/dbt/project",
+            resource_type="model",
+            unique_id="model.my_project.dim_date",
+            reason=None)
+    ]
     summary = GovernanceResultSummary(
         total_evaluations=1,
         total_passed=1,
@@ -63,7 +71,7 @@ def test_check_command(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> 
     )
 
     # Create a real GovernanceResult object
-    results = GovernanceResult(summary=summary, metadata=metadata, details=details)
+    results = GovernanceResult(summary=summary, metadata=metadata, results=details)
     mock_evaluate_rules.return_value = results
 
     # Invoke the CLI
@@ -123,7 +131,16 @@ def test_check_command_with_severity(mock_load_rules, mock_evaluate_rules, tmp_p
     ]
 
     # Create real GovernanceResult components
-    details = [ValidationResult(rule_name="Primary Key Test", status=ValidationStatus.PASSED, reason=None)]
+    details = [
+        ValidationResult(
+            rule_name="Primary Key Test",
+            status=ValidationStatus.PASSED,
+            dbt_project_path="path/to/dbt/project",
+            resource_type="model",
+            unique_id="model.my_project.dim_date",
+            reason=None,
+        )
+    ]
     summary = GovernanceResultSummary(
         total_evaluations=1,
         total_passed=1,
@@ -136,7 +153,7 @@ def test_check_command_with_severity(mock_load_rules, mock_evaluate_rules, tmp_p
     )
 
     # Create a real GovernanceResult object
-    results = GovernanceResult(summary=summary, metadata=metadata, details=details)
+    results = GovernanceResult(summary=summary, metadata=metadata, results=details)
     mock_evaluate_rules.return_value = results
 
     # Invoke the CLI with severity filter
@@ -159,8 +176,8 @@ def test_check_command_with_severity(mock_load_rules, mock_evaluate_rules, tmp_p
     assert "Passed: 1" in result.output
     assert "Failed: 0" in result.output
     # Verify the results.details contains only the high severity rule
-    assert all(detail.rule_name == "Primary Key Test" for detail in results.details)
-    assert not any(detail.rule_name == "Owner Metadata" for detail in results.details)
+    assert all(detail.rule_name == "Primary Key Test" for detail in results.results)
+    assert not any(detail.rule_name == "Owner Metadata" for detail in results.results)
 
     # Verify mocks
     mock_load_rules.assert_called_once_with(str(rules_file))

@@ -46,9 +46,24 @@ def test_governance_result_to_dict() -> None:
     summary = GovernanceResultSummary(total_evaluations=2, total_passed=1, total_failed=1)
 
     # Mock validation results
+    project_path = "path/to/dbt/project"
     validation_results_details = [
-        ValidationResult(rule_name="Test Rule 1", status=ValidationStatus.PASSED, reason="Check passed"),
-        ValidationResult(rule_name="Test Rule 2", status=ValidationStatus.FAILED, reason="Check failed"),
+        ValidationResult(
+            rule_name="Test Rule 1",
+            status=ValidationStatus.PASSED,
+            dbt_project_path=project_path,
+            resource_type="model",
+            unique_id="model.my_project.dim_date",
+            reason="Check passed",
+        ),
+        ValidationResult(
+            rule_name="Test Rule 2",
+            status=ValidationStatus.FAILED,
+            dbt_project_path=project_path,
+            resource_type="model",
+            unique_id="model.my_project.fct_orders",
+            reason="Check failed",
+        ),
     ]
 
     # GovernanceResult
@@ -62,8 +77,24 @@ def test_governance_result_to_dict() -> None:
             "dbt_governance_version": "0.1.0",
         },
         "results": [
-            {"rule_name": "Test Rule 1", "status": "passed", "reason": "Check passed"},
-            {"rule_name": "Test Rule 2", "status": "failed", "reason": "Check failed"},
+            {
+                "rule_name": "Test Rule 1",
+                "rule_severity": "medium",
+                "status": "passed",
+                "dbt_project_path": project_path,
+                "resource_type": "model",
+                "unique_id": "model.my_project.dim_date",
+                "reason": "Check passed",
+            },
+            {
+                "rule_name": "Test Rule 2",
+                "rule_severity": "medium",
+                "status": "failed",
+                "dbt_project_path": project_path,
+                "resource_type": "model",
+                "unique_id": "model.my_project.fct_orders",
+                "reason": "Check failed",
+            },
         ],
     }
     assert governance_result.to_dict() == expected_dict
