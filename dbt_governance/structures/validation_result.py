@@ -1,6 +1,7 @@
-from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Optional
+
+from pydantic import BaseModel, Field
 
 from dbt_governance.structures.severity import Severity
 
@@ -35,8 +36,7 @@ class ValidationStatus(Enum):
         return descriptions[self]
 
 
-@dataclass
-class ValidationResult:
+class ValidationResult(BaseModel):
     """Represents the result of evaluating a governance rule.
 
     Attributes:
@@ -50,13 +50,14 @@ class ValidationResult:
             flagged a warning).
     """
 
-    rule_name: str
-    rule_severity: Severity
-    dbt_project_path: str
-    resource_type: str
-    unique_id: str
-    status: ValidationStatus
-    reason: Optional[str] = None
+    rule_name: str = Field(..., description="The name of the rule being validated.")
+    dbt_project_path: str = Field(..., description="The path to the dbt project directory.")
+    resource_type: str = Field(..., description="The type of resource being validated.")
+    unique_id: str = Field(..., description="The unique identifier of the resource being validated.")
+    status: ValidationStatus = Field(..., description="The status of the rule validation.")
+    rule_severity: Severity = Field(default=Severity.default_rule_severity(),
+                                    description="The severity of the rule based on the validation status")
+    reason: Optional[str] = Field(None, description="An optional explanation for the validation status.")
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert the ValidationResult to a dictionary for JSON serialization."""

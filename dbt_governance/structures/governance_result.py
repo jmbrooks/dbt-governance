@@ -1,25 +1,26 @@
-from dataclasses import asdict, dataclass, field
 from typing import List
+from pydantic import BaseModel, ConfigDict, Field
 
+import dbt_governance.constants as constants
 from dbt_governance.structures.validation_result import ValidationResult
 
 
-@dataclass(frozen=True)
-class GovernanceResultMetadata:
+class GovernanceResultMetadata(BaseModel):
     """Metadata about the governance evaluation."""
+    model_config = ConfigDict(frozen=True)
 
-    generated_at: str
-    result_uuid: str
-    dbt_governance_version: str
+    generated_at: str = Field(..., description="The timestamp when the governance evaluation was generated.")
+    result_uuid: str = Field(..., description="The UUID of the governance evaluation result.")
+    dbt_governance_version: str = Field(..., description=f"The version of {constants.PROJECT_NAME} used for the "
+                                                         f"evaluation.")
 
 
-@dataclass(frozen=True)
-class GovernanceResultSummary:
+class GovernanceResultSummary(BaseModel):
     """Summary statistics about the governance evaluation."""
 
-    total_evaluations: int
-    total_passed: int
-    total_failed: int
+    total_evaluations: int = Field(..., description="Total number of governance evaluations performed this run.")
+    total_passed: int = Field(..., description="Total number of governance evaluations that passed this run.")
+    total_failed: int = Field(..., description="Total number of governance evaluations that failed this run.")
 
     @property
     def pass_rate(self) -> float:
@@ -27,8 +28,7 @@ class GovernanceResultSummary:
         return self.total_passed / self.total_evaluations if self.total_evaluations > 0 else 0.0
 
 
-@dataclass
-class GovernanceResult:
+class GovernanceResult(BaseModel):
     """Represent the full governance result artifact.
 
     Attributes:
@@ -37,12 +37,12 @@ class GovernanceResult:
         results (List[ValidationResult]): List of Validation check results detailed for each rule evaluation.
     """
 
-    summary: GovernanceResultSummary
-    metadata: GovernanceResultMetadata
-    results: List[ValidationResult] = field(default_factory=list)
+    summary: GovernanceResultSummary = Field(..., description="Summary statistics about the governance evaluation.")
+    metadata: GovernanceResultMetadata = Field(..., description="Metadata about the governance evaluation.")
+    results: List[ValidationResult] = Field(..., description="List of validation results for each rule evaluation.")
 
     def to_dict(self) -> dict:
         """Convert the GovernanceResult to a dictionary for JSON serialization."""
-        result_dict = asdict(self)
+        result_dict = self.dict()
         result_dict["results"] = [detail.to_dict() for detail in self.results]
         return result_dict

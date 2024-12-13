@@ -1,19 +1,21 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
+from pydantic import BaseModel, ConfigDict, Field
+
 from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.severity import Severity
 
 
-@dataclass
-class PassRateAcceptanceThresholdsConfig:
+class PassRateAcceptanceThresholdsConfig(BaseModel):
     """Represents the pass rate acceptance thresholds for governance rules."""
+    model_config = ConfigDict(frozen=True)
 
-    overall: Optional[float]
-    critical: Optional[float]
-    high: Optional[float]
-    medium: Optional[float]
-    low: Optional[float]
+    overall: Optional[float] = Field(None, description="The overall pass rate threshold.")
+    critical: Optional[float] = Field(None, description="The pass rate threshold for critical rules.")
+    high: Optional[float] = Field(None, description="The pass rate threshold for high severity rules.")
+    medium: Optional[float] = Field(None, description="The pass rate threshold for medium severity rules.")
+    low: Optional[float] = Field(None, description="The pass rate threshold for low severity rules.")
 
     @classmethod
     def from_dict(cls, thresholds_config_data: Dict[str, float]) -> "PassRateAcceptanceThresholdsConfig":
@@ -26,12 +28,18 @@ class PassRateAcceptanceThresholdsConfig:
         )
 
 
-@dataclass
-class RuleEvaluationConfig:
-    """"""
+class RuleEvaluationConfig(BaseModel):
+    """Represents the configuration options for evaluating governance rules.
 
-    default_severity: str = Severity.default_rule_severity()
-    pass_rate_acceptance_thresholds: Optional[PassRateAcceptanceThresholdsConfig] = None
+    Attributes:
+        default_severity (str): The default severity level for rules that do not specify a severity.
+        pass_rate_acceptance_thresholds (PassRateAcceptanceThresholdsConfig): The pass rate acceptance thresholds.
+    """
+
+    default_severity: str = Field(Severity.default_rule_severity(), description="The default severity level for rules.")
+    pass_rate_acceptance_thresholds: Optional[PassRateAcceptanceThresholdsConfig] = Field(
+        None, description="Pass rate acceptance thresholds."
+    )
 
     @classmethod
     def from_dict(cls, evaluation_config_data: Dict[str, str]) -> "RuleEvaluationConfig":
@@ -42,12 +50,12 @@ class RuleEvaluationConfig:
         )
 
 
-@dataclass
-class GovernanceRulesConfig:
+class GovernanceRulesConfig(BaseModel):
     """Represents the configuration for governance rules."""
 
-    rule_evaluation_config: RuleEvaluationConfig
-    rules: List[GovernanceRule]
+    rule_evaluation_config: RuleEvaluationConfig = Field(..., description="The configuration options for evaluating "
+                                                                          "governance")
+    rules: List[GovernanceRule] = Field(..., description="The governance rules to evaluate.")
 
     @classmethod
     def from_dict(cls, rules_config_data: Dict[str, Any]) -> "GovernanceRulesConfig":

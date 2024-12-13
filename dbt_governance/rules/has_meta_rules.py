@@ -10,13 +10,13 @@ def has_meta_property(
     meta_property_name: str,
     meta_property_allowed_values: Optional[Union[List[str], str]] = None,
 ) -> List[ValidationResult]:
-    """Validate that all dbt models specify a meta property for model ownership (default 'owner').
+    """Validate that all dbt models specify any required meta properties (and property values, if needed).
 
     Args:
         rule (GovernanceRule): The rule to validate.
         manifest (dbt.contracts.graph.manifest.Manifest): dbt manifest artifact object.
         project_path (str): The path to the dbt project directory.
-        meta_property_name (str): The name of the owner meta property, default 'owner'.
+        meta_property_name (str): The name of the required meta property.
         meta_property_allowed_values (Union[List[str], str]): The value(s) of the meta property that allowed in order
             for the check to pass, if required for validation.
 
