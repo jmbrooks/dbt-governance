@@ -10,7 +10,6 @@ class GovernanceRuleCheckType(BaseModel):
     description: Optional[str] = None
 
 
-# Make a class exactly like the one above, but use pydantic instead of dataclasses
 class GovernanceRule(BaseModel):
     """Represents a governance rule to evaluate dbt projects."""
 

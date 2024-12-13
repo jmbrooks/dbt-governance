@@ -1,6 +1,7 @@
 import os
-from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, TypedDict
+
+from pydantic import BaseModel, Field
 
 import yaml
 
@@ -18,24 +19,39 @@ DBT_CLOUD_CONFIG = TypedDict(
 )
 
 
-@dataclass
-class DbtCloudConfig:
-    """A dbt Cloud configuration, for authentication and API interactions if using dbt Cloud."""
+class DbtCloudConfig(BaseModel):
+    """A dbt Cloud configuration, for authentication and API interactions if using dbt Cloud.
 
-    api_token: Optional[str]
-    organization_id: Optional[str]
-    default_projects: List[str]
+    Attributes:
+        api_token (Optional[str]): The dbt Cloud API token.
+        organization_id (Optional[str]): The dbt Cloud organization ID.
+        default_projects (List[str]): A list of default project names to use for dbt Cloud API interactions.
+
+    """
+
+    api_token: str = Field(..., description="The dbt Cloud API token.")
+    organization_id: str = Field(..., description="The dbt Cloud organization ID.")
+    default_projects: List[str] = Field([], description="A list of default project names to use for dbt Cloud API "
+                                                        "interactions.")
 
 
-@dataclass
-class GovernanceConfig(dict):
-    """A configuration object for the dbt-governance tool."""
+class GovernanceConfig(BaseModel):
+    """A configuration object for the dbt-governance tool.
 
-    project_path: str
-    project_paths: List[str]
-    output_path: str
-    global_rules_file: Optional[str]
-    dbt_cloud: DbtCloudConfig
+    Attributes:
+        project_path (str): Path to a single dbt project.
+        project_paths (List[str]): List of dbt project paths.
+        output_path (str): Path to the output file.
+        global_rules_file (Optional[str]): Path to a global rules file.
+        dbt_cloud (DbtCloudConfig): Configuration for dbt Cloud API interactions.
+
+    """
+
+    project_path: str = Field("", description="Path to a single dbt project.")
+    project_paths: List[str] = Field([], description="List of dbt project paths.")
+    output_path: str = Field(constants.DEFAULT_OUTPUT_FILE_NAME, description="Path to the output file.")
+    global_rules_file: str = Field(constants.DEFAULT_RULES_FILE_NAME, description="Path to a global rules file.")
+    dbt_cloud: Optional[DbtCloudConfig] = Field(None, description="Configuration for dbt Cloud API interactions.")
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "GovernanceConfig":
@@ -45,8 +61,8 @@ class GovernanceConfig(dict):
             output_path=data.get("output_path", constants.DEFAULT_OUTPUT_FILE_NAME),
             global_rules_file=data.get("global_rules_file", constants.DEFAULT_RULES_FILE_NAME),
             dbt_cloud=DbtCloudConfig(
-                api_token=data.get("dbt_cloud", {}).get("api_token"),
-                organization_id=data.get("dbt_cloud", {}).get("organization_id"),
+                api_token=data.get("dbt_cloud", {}).get("api_token", ""),
+                organization_id=data.get("dbt_cloud", {}).get("organization_id", ""),
                 default_projects=data.get("dbt_cloud", {}).get("default_projects", []),
             ),
         )
@@ -75,8 +91,8 @@ DEFAULT_CONFIG = GovernanceConfig(
     project_path="",
     project_paths=[],
     output_path=constants.DEFAULT_OUTPUT_FILE_NAME,
-    global_rules_file=None,
-    dbt_cloud=DbtCloudConfig(api_token=None, organization_id=None, default_projects=[]),
+    global_rules_file=constants.DEFAULT_RULES_FILE_NAME,
+    dbt_cloud=DbtCloudConfig(api_token="", organization_id="", default_projects=[]),
 )
 
 

@@ -1,7 +1,6 @@
 import logging
 import os
 import sys
-from dataclasses import dataclass
 from enum import Enum
 from logging.handlers import RotatingFileHandler
 
@@ -16,7 +15,6 @@ if sys.platform == "win32" and (not os.getenv("TERM") or os.getenv("TERM") == "N
     colorama.init(wrap=True)
 
 
-@dataclass
 class Color(Enum):
     """Enumeration of color codes for console output.
 
