@@ -8,6 +8,7 @@ import dbt_governance.utils as utils
 from dbt_governance.dbt_client import DbtClient
 from dbt_governance.logging_config import logger
 from dbt_governance.rules.has_meta_rules import has_meta_property
+from dbt_governance.rules.has_tag_rules import has_tag
 from dbt_governance.rules.model_owner_rule import model_owner_rule
 from dbt_governance.rules.primary_key_rule import validate_primary_key_rule
 from dbt_governance.structures.governance_result import (
@@ -137,6 +138,17 @@ def evaluate_rules(
                         project_path,
                         rule.checks.get("required_property"),
                         meta_property_allowed_values=rule.checks.get("allowed_values"),
+                    )
+                )
+            if rule.checks.get("type") == "has_tag":
+                results.extend(
+                    has_tag(
+                        rule,
+                        manifest_data,
+                        project_path,
+                        rule.checks.get("required_tag"),
+                        select=rule.checks.get("select"),
+                        match_type=rule.checks.get("match_type"),
                     )
                 )
 
