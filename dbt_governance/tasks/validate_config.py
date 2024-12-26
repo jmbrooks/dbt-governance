@@ -1,0 +1,43 @@
+from typing import Tuple
+import yaml
+
+from dbt_governance.config import validate_config_structure
+from dbt_governance.logging_config import logger
+from dbt_governance.structures.governance_config import GovernanceConfig
+
+
+def validate_config_task(config_file: str) -> Tuple[bool, str]:
+    """"""
+    is_valid_config = True
+    validity_message = ""
+
+    try:
+        with open(config_file, "r") as f:
+            config = yaml.safe_load(f)
+    except yaml.YAMLError as err:
+        is_valid_config = False
+        validity_message = f"Yaml parsing error: {err}"
+    except Exception as err:
+        is_valid_config = False
+        validity_message = f"Failed to load configuration file: {err}"
+
+    # Create GovernanceConfig object from yaml data
+    print(config)
+    dbt_governance_config = GovernanceConfig.from_dict(config)
+    print('got here')
+    errors = validate_config_structure(dbt_governance_config)
+
+    if errors:
+        for error in errors:
+            validity_message += f"- {error}"
+
+    # Log the loaded configuration (sensitive keys redacted)
+    redacted_config = dbt_governance_config.copy()
+    if redacted_config and redacted_config.dbt_cloud.api_token:
+        redacted_config["dbt_cloud"]["api_token"] = "REDACTED"  # nosec B105 (no hardcode issue, false flag)
+    logger.debug(f"Loaded Configuration: {redacted_config}")
+
+    if not validity_message:  # If no errors, set to success validity message
+        validity_message = "Configuration file is valid!"
+
+    return is_valid_config, validity_message

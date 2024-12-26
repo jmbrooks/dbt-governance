@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 import yaml
 
 import dbt_governance.utils as utils
-from dbt_governance.dbt_client import DbtClient
+from dbt_governance.dbt_project import DbtProject
 from dbt_governance.logging_config import logger
 from dbt_governance.rules.has_meta_rules import has_meta_property
 from dbt_governance.rules.has_tag_rules import has_tag
@@ -71,12 +71,12 @@ def evaluate_task(
         # Load dbt manifest.json
         manifest_path = Path(project_path) / "target" / "manifest.json"
         logger.info(f"Loading dbt project manifest at: {manifest_path}")
-        dbt_client = DbtClient(project_path)
+        dbt_project = DbtProject(project_path=project_path)
 
         if not manifest_path.exists():
             raise FileNotFoundError(f"Manifest file not found at path: {manifest_path}")
 
-        manifest_data = dbt_client.load_manifest()
+        manifest_data = dbt_project.load_manifest()
 
         # Iterate over rules and evaluate results against dbt project(s) artifacts
         for rule in rules:
@@ -91,8 +91,8 @@ def evaluate_task(
             rule_evaluation = RuleEvaluation(
                 rule=rule,
                 dbt_project_path=project_path,
-                dbt_project_version=dbt_client.dbt_version,
-                dbt_project_manifest_generated_at=str(dbt_client.generated_at),
+                dbt_project_version=dbt_project.dbt_version,
+                dbt_project_manifest_generated_at=str(dbt_project.generated_at),
                 dbt_selection_syntax=rule.dbt_selection_clause,
             )
 
