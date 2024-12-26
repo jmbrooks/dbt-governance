@@ -8,6 +8,7 @@ from dbt_governance.structures.severity import Severity
 
 class PassRateAcceptanceThresholdsConfig(BaseModel):
     """Represents the pass rate acceptance thresholds for governance rules."""
+
     model_config = ConfigDict(frozen=True)
 
     overall: Optional[float] = Field(None, description="The overall pass rate threshold.")
@@ -52,8 +53,9 @@ class RuleEvaluationConfig(BaseModel):
 class GovernanceRulesConfig(BaseModel):
     """Represents the configuration for governance rules."""
 
-    rule_evaluation_config: RuleEvaluationConfig = Field(..., description="The configuration options for evaluating "
-                                                                          "governance")
+    rule_evaluation_config: RuleEvaluationConfig = Field(
+        ..., description="The configuration options for evaluating governance"
+    )
     rules: List[GovernanceRule] = Field(..., description="The governance rules to evaluate.")
 
     @classmethod

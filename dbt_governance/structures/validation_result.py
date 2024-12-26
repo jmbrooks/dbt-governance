@@ -55,8 +55,9 @@ class ValidationResult(BaseModel):
     resource_type: str = Field(..., description="The type of resource being validated.")
     unique_id: str = Field(..., description="The unique identifier of the resource being validated.")
     status: ValidationStatus = Field(..., description="The status of the rule validation.")
-    rule_severity: Severity = Field(default=Severity.default_rule_severity(),
-                                    description="The severity of the rule based on the validation status")
+    rule_severity: Severity = Field(
+        default=Severity.default_rule_severity(), description="The severity of the rule based on the validation status"
+    )
     reason: Optional[str] = Field(None, description="An optional explanation for the validation status.")
 
     def to_dict(self) -> Dict[str, Any]:
