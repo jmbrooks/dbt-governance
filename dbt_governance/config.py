@@ -84,7 +84,7 @@ def validate_config_structure(config: GovernanceConfig) -> List[str]:
 
         # Confirm each project path is default_projects exists as a valid Path
         for project_path in dbt_cloud_config.default_projects:
-            if not os.path.exists(project_path):
-                errors.append(f"dbt_cloud.default_projects: Invalid project path: {project_path}")
+            errors.append(f"dbt_cloud.default_projects: Invalid project path: {project_path}") \
+                if not os.path.exists(project_path) else None
 
     return errors

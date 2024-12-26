@@ -9,7 +9,8 @@ def append_evaluation_result(
     results: List[ValidationResult],
     rule: GovernanceRule,
     project_path: str,
-    node: "NodeType",
+    node_resource_type: str,
+    node_unique_id: str,
     failed_evaluation_description: str,
     passed_evaluation_description: Optional[str] = None,
 ) -> None:
@@ -20,7 +21,8 @@ def append_evaluation_result(
         results (list): The list of ValidationResult objects.
         rule (GovernanceRule): The rule to validate.
         project_path (str): The path to the dbt project directory.
-        node (NodeType): The dbt node object.
+        node_resource_type (str): The dbt resource type (e.g. model, source, snapshot).
+        node_unique_id (str): The unique ID of the dbt resource.
         failed_evaluation_description (str): The reason for the failed evaluation.
         passed_evaluation_description (str): Optional reason for the passed evaluation (default is no pass description).
     """
@@ -30,8 +32,8 @@ def append_evaluation_result(
                 rule_name=rule.name,
                 rule_severity=rule.severity,
                 dbt_project_path=project_path,
-                resource_type=node.resource_type,
-                unique_id=node.unique_id,
+                resource_type=node_resource_type,
+                unique_id=node_unique_id,
                 status=ValidationStatus.PASSED,
                 reason=passed_evaluation_description,
             )
@@ -42,8 +44,8 @@ def append_evaluation_result(
                 rule_name=rule.name,
                 rule_severity=rule.severity,
                 dbt_project_path=project_path,
-                resource_type=node.resource_type,
-                unique_id=node.unique_id,
+                resource_type=node_resource_type,
+                unique_id=node_unique_id,
                 status=ValidationStatus.FAILED,
                 reason=failed_evaluation_description,
             )

@@ -10,6 +10,7 @@ from pydantic import AfterValidator, BaseModel, ConfigDict, Field, PrivateAttr
 from typing_extensions import Annotated
 
 import dbt_governance.utils as utils
+from dbt_governance.logging_config import logger
 
 
 class DbtProject(BaseModel):
@@ -126,12 +127,16 @@ class DbtProject(BaseModel):
             list: A list of unique IDs for models matching the selection criteria.
         """
         if force_parse:
+            logger.debug("Forcing re-parsing of the manifest based on `force_parse` setting")
             # use 'parse' command to load a Manifest
             res: dbtRunnerResult = dbtRunner().invoke(["parse"], project_dir=self.project_path)
             manifest: Manifest = res.result
+            logger.debug(f"Finished forced re-parsing of the project, with updated manifest generation time: "
+                         f"{manifest.metadata.generated_at}")
 
         # Create a Graph from the manifest
         graph = Graph(self.manifest)
+        logger.debug(f"Graph created from manifest with {len(graph.nodes())} nodes")
 
         # reuse this manifest in subsequent commands to skip parsing
         dbt = dbtRunner(manifest=self.manifest)

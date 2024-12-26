@@ -1,13 +1,14 @@
-from typing import Dict, List, Set
+from typing import ClassVar, Dict, List, Set
 
+from dbt_governance.logging_config import logger
 from dbt_governance.structures.governance_rule import GovernanceRule
 
 
 class RulesRegistry:
     """Registry for default governance rules."""
 
-    _rules: Dict[str, GovernanceRule] = {}
-    _rule_selection_clauses: Dict[str, Dict[str, str]] = {}
+    _rules: ClassVar[Dict[str, GovernanceRule]] = {}
+    _rule_selection_clauses: ClassVar[Dict[str, Dict[str, str]]] = {}
 
     @classmethod
     def register_rule(cls, rule: GovernanceRule) -> None:
@@ -60,6 +61,7 @@ class RulesRegistry:
                 if sorted_exclude_clause:
                     selection_clause_string += f" --exclude {sorted_exclude_clause}"
 
+                logger.debug(f"Rule: {rule_name} registered with Selection Clause: {selection_clause_string}")
                 selection_clauses.add(selection_clause_string)
 
         return selection_clauses

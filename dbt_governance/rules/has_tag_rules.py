@@ -79,7 +79,8 @@ def has_tag(
             results=results,
             rule=rule,
             project_path=project_path,
-            node=node,
+            node_resource_type=node.resource_type,
+            node_unique_id=node.unique_id,
             failed_evaluation_description=f"Model {node_id} is missing required '{tag_name}' tag.",
         )
 

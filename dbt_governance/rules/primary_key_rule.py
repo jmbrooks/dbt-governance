@@ -2,6 +2,7 @@ from typing import List
 
 from dbt.contracts.graph.manifest import Manifest
 
+from dbt_governance.logging_config import logger
 from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
 
@@ -47,6 +48,7 @@ def validate_primary_key_rule(rule: GovernanceRule, manifest: Manifest, project_
                 continue
 
             if test.depends_on.nodes == [model_id] and test.test_metadata.name == "primary_key":
+                logger.debug(f"Model {model_id} identified to have primary key test: {test_id}")
                 has_primary_key_test = True
                 break
 
