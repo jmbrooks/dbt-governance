@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -22,10 +22,10 @@ class GovernanceRule(BaseModel):
     severity: Severity = Field(..., description="The severity level of the rule.")
     enabled: Optional[bool] = Field(True, description="Whether the rule is enabled.")
     args: Optional[Dict[str, Any]] = Field(None, description="Test-specific arguments or argument scope configuration.")
-    paths: Optional[List[str]] = Field(None, description="Affected paths (e.g., folders/models).")
+    paths: Optional[list[str]] = Field(None, description="Affected paths (e.g., folders/models).")
 
     @classmethod
-    def from_dict(cls, rule_data: Dict[str, Any]) -> "GovernanceRule":
+    def from_dict(cls, rule_data: dict[str, Any]) -> "GovernanceRule":
         """Create a GovernanceRule object from a dictionary."""
         return cls(
             name=rule_data.get("name"),
@@ -38,7 +38,7 @@ class GovernanceRule(BaseModel):
         )
 
     @classmethod
-    def get_rule_by_name(cls, rule_name: str, rules_data: List[Dict[str, Any]]) -> "GovernanceRule":
+    def get_rule_by_name(cls, rule_name: str, rules_data: list[Dict[str, Any]]) -> "GovernanceRule":
         """Retrieve a governance rule by its name."""
         rule_index = next((i for i, item in enumerate(rules_data) if item.get("name") == rule_name), -1)
         if rule_index == -1:

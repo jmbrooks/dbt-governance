@@ -1,11 +1,9 @@
-from typing import List
-
 from dbt_governance.config import load_config
 from dbt_governance.initialize import load_rules
 from dbt_governance.structures.governance_rule import GovernanceRule
 
 
-def list_rules_task(project_path: str, project_paths: List[str], rules_file: str) -> List[GovernanceRule]:
+def list_rules_task(project_path: str, project_paths: list[str], rules_file: str) -> list[GovernanceRule]:
     """CLI task action to return all configured and currently enabled Governance Rules via the project rules config.
 
     Args:

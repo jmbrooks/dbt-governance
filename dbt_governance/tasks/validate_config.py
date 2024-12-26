@@ -1,5 +1,3 @@
-from typing import Tuple
-
 import yaml
 
 from dbt_governance.config import validate_config_structure
@@ -7,7 +5,7 @@ from dbt_governance.logging_config import logger
 from dbt_governance.structures.governance_config import GovernanceConfig
 
 
-def validate_config_task(config_file: str) -> Tuple[bool, str]:
+def validate_config_task(config_file: str) -> tuple[bool, str]:
     """"""
     is_valid_config = True
     validity_message = ""

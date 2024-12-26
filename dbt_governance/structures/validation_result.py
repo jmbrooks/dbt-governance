@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -58,7 +58,7 @@ class ValidationResult(BaseModel):
     )
     reason: Optional[str] = Field(None, description="An optional explanation for the validation status.")
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the ValidationResult to a dictionary for JSON serialization."""
         return {
             "rule_name": self.rule_name,

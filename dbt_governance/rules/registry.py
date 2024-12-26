@@ -1,4 +1,4 @@
-from typing import ClassVar, Dict, List, Set
+from typing import ClassVar
 
 from dbt_governance.logging_config import logger
 from dbt_governance.structures.governance_rule import GovernanceRule
@@ -7,8 +7,8 @@ from dbt_governance.structures.governance_rule import GovernanceRule
 class RulesRegistry:
     """Registry for default governance rules."""
 
-    _rules: ClassVar[Dict[str, GovernanceRule]] = {}
-    _rule_selection_clauses: ClassVar[Dict[str, Dict[str, str]]] = {}
+    _rules: ClassVar[dict[str, GovernanceRule]] = {}
+    _rule_selection_clauses: ClassVar[dict[str, dict[str, str]]] = {}
 
     @classmethod
     def register_rule(cls, rule: GovernanceRule) -> None:
@@ -23,12 +23,12 @@ class RulesRegistry:
             }
 
     @property
-    def all_rules(self) -> List[GovernanceRule]:
+    def all_rules(self) -> list[GovernanceRule]:
         """Retrieve all registered default rules."""
         return list(self._rules.values())
 
     @property
-    def rule_selection_clauses(self) -> Dict[str, Dict[str, str]]:
+    def rule_selection_clauses(self) -> dict[str, dict[str, str]]:
         """Retrieve all rule selection clauses."""
         return self._rule_selection_clauses
 
@@ -40,7 +40,7 @@ class RulesRegistry:
         return cls._rules[rule_name]
 
     @classmethod
-    def get_distinct_rule_selection_clauses(cls) -> Set[str]:
+    def get_distinct_rule_selection_clauses(cls) -> set[str]:
         """Retrieve distinct rule selection clauses."""
         selection_clauses = set()
         for rule_name, rule_data in cls._rule_selection_clauses.items():

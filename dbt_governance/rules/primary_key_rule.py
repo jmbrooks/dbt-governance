@@ -1,5 +1,3 @@
-from typing import List
-
 from dbt.contracts.graph.manifest import Manifest
 
 from dbt_governance.logging_config import logger
@@ -7,7 +5,7 @@ from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
 
 
-def validate_primary_key_rule(rule: GovernanceRule, manifest: Manifest, project_path: str) -> List[ValidationResult]:
+def validate_primary_key_rule(rule: GovernanceRule, manifest: Manifest, project_path: str) -> list[ValidationResult]:
     """Validate the primary key test rule against dbt models.
 
     Args:
@@ -16,9 +14,9 @@ def validate_primary_key_rule(rule: GovernanceRule, manifest: Manifest, project_
         project_path (str): The path to the dbt project directory.
 
     Returns:
-        List[ValidationResult]: Validation results for the rule.
+        list[ValidationResult]: Validation results for the rule.
     """
-    results: List[ValidationResult] = []
+    results: list[ValidationResult] = []
 
     for model_id, model in manifest.nodes.items():
         # Skip non-models

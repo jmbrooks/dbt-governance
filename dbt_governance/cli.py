@@ -1,5 +1,3 @@
-from typing import List
-
 import click
 
 import dbt_governance.constants as constants
@@ -43,7 +41,7 @@ def cli() -> None:
     multiple=True,
     help="Filter results by one or more severities (e.g., 'critical', 'high', 'medium', 'low').",
 )
-def evaluate(project_path: str, project_paths: List[str], rules_file: str, severity: str) -> None:
+def evaluate(project_path: str, project_paths: list[str], rules_file: str, severity: str) -> None:
     """Run governance checks on the specified dbt project(s)."""
     config = load_config(project_path, project_paths, rules_file)
     output_file_path = config.output_path
@@ -146,75 +144,6 @@ def evaluate(project_path: str, project_paths: List[str], rules_file: str, sever
     click.echo(f"\nJSON results written to {output_file_path}")
 
 
-# Command: Check Governance Rules
-# @cli.command()
-# @click.option(
-#     "--project-path",
-#     type=click.Path(exists=True, file_okay=False, resolve_path=True),
-#     help="Path to a single dbt project directory.",
-# )
-# @click.option(
-#     "--project-paths",
-#     type=click.Path(exists=True, file_okay=False, resolve_path=True),
-#     multiple=True,
-#     help="Paths to one or more dbt project directories.",
-# )
-# @click.option(
-#     "--rules-file",
-#     type=click.Path(exists=True, dir_okay=False, resolve_path=True),
-#     help="Path to a custom rules file.",
-# )
-# @click.option(
-#     "--severity",
-#     type=click.Choice([severity.value for severity in Severity]),
-#     help="Filter results by severity (e.g., 'critical', 'high', 'medium', 'low').",
-# )
-# def check(project_path: str, project_paths: List[str], rules_file: str, severity: str) -> None:
-#     """Run governance checks on the specified dbt project(s)."""
-#     config = load_config(project_path, project_paths, rules_file)
-#     output_file_path = config.output_path
-#     check_uuid = utils.get_uuid()
-#
-#     click.echo(f"Running dbt-governance v{__version__} check with UUID: {check_uuid}")
-#     logger.debug(f"Running governance checks with configuration: {config}")
-#
-#     # Load rules configuration
-#     # global_config = load_global_rules_config(rules_file)
-#     rules = load_rules(config.global_rules_file)
-#     logger.debug(f"Loaded rules: {rules}")
-#
-#     # Filter rules by severity, if specified
-#     if severity:
-#         rules = [rule for rule in rules if str(rule.severity) == severity.lower()]
-#
-#     # Get scope of dbt projects to evaluate
-#     project_paths = config.get_project_paths()
-#     click.echo(f"dbt-governance project path(s) scope: {', '.join(project_paths)}")
-#
-#     # Evaluate configured and selected rules against dbt project(s)
-#     results = evaluate_rules(rules, project_paths, check_uuid, __version__)
-#     logger.debug(f"Rule evaluation results: {results}")
-#
-#     # Output results
-#     click.echo("\nGovernance Check Results:")
-#
-#     click.echo("\nSummary:")
-#     click.echo(f"  Total Evaluations: {results.summary.total_evaluations}")
-#     click.echo(f"  Total Passed: {results.summary.total_passed}")
-#     click.echo(f"  Total Failed: {results.summary.total_failed}")
-#
-#     if results.summary.total_evaluations == 0:
-#         click.echo(yellow("\nNo rules evaluated in this dbt-governance run."))
-#     else:
-#         click.echo(f"\nGovernance Pass Rate: {results.summary.pass_rate:.2%}")
-#         if results.summary.total_evaluations == results.summary.total_passed:
-#             click.echo(green("\nAll rule evaluations passed!"))
-#
-#     # Write to JSON file
-#     utils.write_json_result(results.to_dict(), output_file_path)
-#     click.echo(f"\nJSON results written to {output_file_path}")
-
-
 # Command: List Governance Rules
 @cli.command()
 @click.option(
@@ -233,7 +162,7 @@ def evaluate(project_path: str, project_paths: List[str], rules_file: str, sever
     type=click.Path(exists=True, dir_okay=False, resolve_path=True),
     help="Path to a custom rules file.",
 )
-def list_rules(project_path: str, project_paths: List[str], rules_file: str) -> None:
+def list_rules(project_path: str, project_paths: list[str], rules_file: str) -> None:
     """List all configured and enabled governance rules."""
     click.echo("Listing active governance rules...")
     governance_rules = list_rules_task(project_path, project_paths, rules_file)

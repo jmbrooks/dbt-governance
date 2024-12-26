@@ -3,7 +3,7 @@ import time
 from datetime import datetime, timezone
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Optional, Union
 from uuid import uuid4
 
 import dbt_governance.constants as constants
@@ -80,7 +80,7 @@ def validate_dbt_path(path: Union[str, Path]) -> Path:
     return path
 
 
-def write_json_result(results_data: Dict[str, Any], output_file_path: Union[str, Path]) -> Path:
+def write_json_result(results_data: dict[str, Any], output_file_path: Union[str, Path]) -> Path:
     """Write data to JSON file with consistent formatting, and return the successfully-written-to output path."""
     output_file_path = Path(output_file_path)
     with output_file_path.open("w") as output_file:

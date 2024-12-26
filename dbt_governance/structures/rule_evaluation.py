@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -20,10 +20,10 @@ class RuleEvaluation(BaseModel):
     dbt_selection_syntax: Optional[str] = Field(
         None, description="The dbt selection syntax used to get dbt nodes to evaluate."
     )
-    evaluate_dbt_nodes: List[str] = Field(
+    evaluate_dbt_nodes: list[str] = Field(
         [], description="The dbt nodes that will be / were evaluated by the rule this run."
     )
-    validation_results: List[ValidationResult] = Field([], description="The results of the rule validation runs.")
+    validation_results: list[ValidationResult] = Field([], description="The results of the rule validation runs.")
 
     def to_dict(self) -> dict:
         """Convert the RuleEvaluation to a dictionary for JSON serialization."""

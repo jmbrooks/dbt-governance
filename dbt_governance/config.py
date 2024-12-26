@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import Optional
 
 import yaml
 
@@ -27,13 +27,13 @@ def load_global_config() -> GovernanceConfig:
 
 
 def load_config(
-    project_path: Optional[str] = None, project_paths: Optional[List[str]] = None, rules_file: Optional[str] = None
+    project_path: Optional[str] = None, project_paths: Optional[list[str]] = None, rules_file: Optional[str] = None
 ) -> GovernanceConfig:
     """Merge configurations from global config, environment variables, and CLI options.
 
     Args:
         project_path (Optional[str]): Path to a single dbt project.
-        project_paths (Optional[List[str]]): List of dbt project paths.
+        project_paths (Optional[list[str]]): List of dbt project paths.
         rules_file (Optional[str]): Path to a custom rules file.
 
     Returns:
@@ -59,7 +59,7 @@ def load_config(
     return config
 
 
-def validate_config_structure(config: GovernanceConfig) -> List[str]:
+def validate_config_structure(config: GovernanceConfig) -> list[str]:
     """Validate the structure of the configuration dictionary.
 
     Args:

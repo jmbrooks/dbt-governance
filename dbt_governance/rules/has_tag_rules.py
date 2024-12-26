@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from dbt_governance.rule_handler import append_evaluation_result
 from dbt_governance.structures.validation_result import ValidationResult
@@ -12,7 +12,7 @@ def has_tag(
     column_check_type: Optional[str] = None,
     select: Optional[str] = None,
     match_type: Optional[str] = None,
-) -> List[ValidationResult]:
+) -> list[ValidationResult]:
     """Validate that all dbt models specify any required tags.
 
     Args:
@@ -31,7 +31,7 @@ def has_tag(
     Returns:
         list: A list of ValidationResult objects for the rule.
     """
-    results: List[ValidationResult] = []
+    results: list[ValidationResult] = []
     match_orientation = "match"
 
     for node_id, node in manifest.nodes.items():

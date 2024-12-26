@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from dbt_governance.constants import DEFAULT_OWNER_META_PROPERTY_NAME
 from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
@@ -9,7 +9,7 @@ def model_owner_rule(
     manifest,
     project_path: str,
     owner_meta_property_name: Optional[str] = None,
-) -> List[ValidationResult]:
+) -> list[ValidationResult]:
     """Validate that all dbt models specify a meta property for model ownership (default 'owner').
 
     Args:

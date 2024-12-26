@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 from dbt.cli.main import dbtRunner, dbtRunnerResult
 from dbt.contracts.graph.manifest import Manifest
@@ -98,7 +98,7 @@ class DbtProject(BaseModel):
         self._manifest = Manifest.from_dict(manifest_data)
         return self._manifest
 
-    def get_model_nodes(self) -> Dict[str, Any]:
+    def get_model_nodes(self) -> dict[str, Any]:
         """Retrieve all model nodes from the Manifest.
 
         Returns:
@@ -112,7 +112,7 @@ class DbtProject(BaseModel):
         select: Optional[str] = None,
         exclude: Optional[str] = None,
         force_parse: bool = False,
-    ) -> Tuple[bool, List[str]]:
+    ) -> tuple[bool, list[str]]:
         """
         Get model unique IDs matching dbt selection syntax using a compiled manifest.
 

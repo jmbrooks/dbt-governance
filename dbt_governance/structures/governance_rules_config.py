@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -18,7 +18,7 @@ class PassRateAcceptanceThresholdsConfig(BaseModel):
     low: Optional[float] = Field(None, description="The pass rate threshold for low severity rules.")
 
     @classmethod
-    def from_dict(cls, thresholds_config_data: Dict[str, float]) -> "PassRateAcceptanceThresholdsConfig":
+    def from_dict(cls, thresholds_config_data: dict[str, float]) -> "PassRateAcceptanceThresholdsConfig":
         return cls(
             overall=thresholds_config_data.get("overall"),
             critical=thresholds_config_data.get("critical"),
@@ -47,7 +47,7 @@ class RuleEvaluationConfig(BaseModel):
     )
 
     @classmethod
-    def from_dict(cls, evaluation_config_data: Dict[str, str]) -> "RuleEvaluationConfig":
+    def from_dict(cls, evaluation_config_data: dict[str, str]) -> "RuleEvaluationConfig":
         thresholds_config_data = evaluation_config_data.get("pass_rate_acceptance_thresholds", {})
         return cls(
             default_severity=evaluation_config_data.get("default_severity", Severity.default_rule_severity()),
@@ -61,10 +61,10 @@ class GovernanceRulesConfig(BaseModel):
     rule_evaluation_config: RuleEvaluationConfig = Field(
         ..., description="The configuration options for evaluating governance"
     )
-    rules: List[GovernanceRule] = Field(..., description="The governance rules to evaluate.")
+    rules: list[GovernanceRule] = Field(..., description="The governance rules to evaluate.")
 
     @classmethod
-    def from_dict(cls, rules_config_data: Dict[str, Any]) -> "GovernanceRulesConfig":
+    def from_dict(cls, rules_config_data: dict[str, Any]) -> "GovernanceRulesConfig":
         return cls(
             rule_evaluation_config=RuleEvaluationConfig.from_dict(rules_config_data.get("rule_evaluation_config", {})),
             rules=[GovernanceRule(**rule_data) for rule_data in rules_config_data.get("rules", [])],

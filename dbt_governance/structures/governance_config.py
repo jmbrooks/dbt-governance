@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -11,7 +11,7 @@ class DbtCloudConfig(BaseModel):
     Attributes:
         api_token (Optional[str]): The dbt Cloud API token.
         organization_id (Optional[str]): The dbt Cloud organization ID.
-        default_projects (List[str]): A list of default project names to use for dbt Cloud API interactions.
+        default_projects (list[str]): A list of default project names to use for dbt Cloud API interactions.
 
     """
 
@@ -19,7 +19,7 @@ class DbtCloudConfig(BaseModel):
 
     api_token: str = Field(..., description="The dbt Cloud API token.")
     organization_id: str = Field(..., description="The dbt Cloud organization ID.")
-    default_projects: List[str] = Field(
+    default_projects: list[str] = Field(
         [], description="A list of default project names to use for dbt Cloud API interactions."
     )
 
@@ -42,7 +42,7 @@ class GovernanceConfig(BaseModel):
 
     Attributes:
         project_path (str): Path to a single dbt project.
-        project_paths (List[str]): List of dbt project paths.
+        project_paths (list[str]): List of dbt project paths.
         output_path (str): Path to the output file.
         global_rules_file (Optional[str]): Path to a global rules file.
         dbt_cloud (DbtCloudConfig): Configuration for dbt Cloud API interactions.
@@ -50,13 +50,13 @@ class GovernanceConfig(BaseModel):
     """
 
     project_path: str = Field("", description="Path to a single dbt project.")
-    project_paths: List[str] = Field([], description="List of dbt project paths.")
+    project_paths: list[str] = Field([], description="List of dbt project paths.")
     output_path: str = Field(constants.DEFAULT_OUTPUT_FILE_NAME, description="Path to the output file.")
     global_rules_file: str = Field(constants.DEFAULT_RULES_FILE_NAME, description="Path to a global rules file.")
     dbt_cloud: Optional[DbtCloudConfig] = Field(None, description="Configuration for dbt Cloud API interactions.")
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "GovernanceConfig":
+    def from_dict(cls, data: dict[str, Any]) -> "GovernanceConfig":
         return cls(
             project_path=data.get("project_path", ""),
             project_paths=data.get("project_paths", []),
@@ -69,7 +69,7 @@ class GovernanceConfig(BaseModel):
             ),
         )
 
-    def get_project_paths(self) -> List[str]:
+    def get_project_paths(self) -> list[str]:
         """Retrieve the list of project paths from the configuration.
 
         Returns:
@@ -78,7 +78,7 @@ class GovernanceConfig(BaseModel):
         Raises:
             ValueError: If no project paths are found in the configuration.
         """
-        project_path_lists: List[str] = []
+        project_path_lists: list[str] = []
         if self.project_path:
             project_path_lists.append(self.project_path)
         elif self.project_paths:

@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 import yaml
 
@@ -21,14 +21,14 @@ from dbt_governance.structures.rule_evaluation import RuleEvaluation
 from dbt_governance.structures.validation_result import ValidationStatus
 
 
-def load_global_rules_config(rules_file: str) -> Dict[str, Any]:
+def load_global_rules_config(rules_file: str) -> dict[str, Any]:
     """Load the global configuration for governance rules from a YAML file.
 
     Args:
         rules_file (str): Path to the rules file.
 
     Returns:
-        Dict: The global configuration dictionary.
+        dict: The global configuration dictionary.
     """
     if not rules_file or not os.path.exists(rules_file):
         logger.error(f"Rules file not found: {rules_file}")
@@ -44,16 +44,16 @@ def load_global_rules_config(rules_file: str) -> Dict[str, Any]:
 
 
 def evaluate_task(
-    rules: List[GovernanceRule],
-    project_paths: List[Union[str, Path]],
+    rules: list[GovernanceRule],
+    project_paths: list[Union[str, Path]],
     check_uuid: str,
     dbt_governance_version: str,
 ) -> GovernanceResult:
     """CLI task action to evaluate governance rules against dbt project metadata.
 
     Args:
-        rules (List[GovernanceRule]): List of governance rules.
-        project_paths (List[Union[str, Path]]): List of dbt project paths.
+        rules (list[GovernanceRule]): List of governance rules.
+        project_paths (list[Union[str, Path]]): List of dbt project paths.
         check_uuid (str): UUID for the dbt-governance check run and result.
         dbt_governance_version (str): Version of the dbt-governance package (e.g. 0.6.1).
 

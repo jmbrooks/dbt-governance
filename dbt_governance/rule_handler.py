@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
@@ -6,7 +6,7 @@ from dbt_governance.structures.validation_result import ValidationResult, Valida
 
 def append_evaluation_result(
     is_passing_evaluation: bool,
-    results: List[ValidationResult],
+    results: list[ValidationResult],
     rule: GovernanceRule,
     project_path: str,
     node_resource_type: str,
