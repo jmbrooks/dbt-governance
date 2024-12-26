@@ -55,8 +55,9 @@ class GovernanceRule(BaseModel):
     @property
     def dbt_selection_clause(self) -> str:
         """Generate a dbt selection clause for the rule."""
-        if not self.args:
-            return ""
-        select_clause = self.args.get("select", "")
-        exclude_clause = self.args.get("exclude", "")
-        return utils.assemble_dbt_selection_clause(select_clause, exclude_clause)
+        selection_clause = ""
+        if self.args:
+            select_clause = self.args.get("select", "")
+            exclude_clause = self.args.get("exclude", "")
+            selection_clause = utils.assemble_dbt_selection_clause(select_clause, exclude_clause)
+        return selection_clause

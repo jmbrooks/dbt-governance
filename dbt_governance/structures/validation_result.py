@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Dict, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from dbt_governance.structures.severity import Severity
 
@@ -20,10 +20,6 @@ class ValidationStatus(Enum):
     FAILED = "failed"
     ERROR = "error"
     WARNING = "warning"
-
-    def __str__(self):
-        """Return the string representation for JSON serialization."""
-        return self.value
 
     def __repr__(self) -> str:
         """Return a user-friendly description of the validation status."""
@@ -50,6 +46,8 @@ class ValidationResult(BaseModel):
             flagged a warning).
     """
 
+    model_config = ConfigDict(use_enum_values=True)
+
     rule_name: str = Field(..., description="The name of the rule being validated.")
     dbt_project_path: str = Field(..., description="The path to the dbt project directory.")
     resource_type: str = Field(..., description="The type of resource being validated.")
@@ -64,7 +62,7 @@ class ValidationResult(BaseModel):
         """Convert the ValidationResult to a dictionary for JSON serialization."""
         return {
             "rule_name": self.rule_name,
-            "rule_severity": str(self.rule_severity),  # Convert Enum to string
+            "rule_severity": self.rule_severity,  # Convert Enum to string
             "dbt_project_path": self.dbt_project_path,
             "resource_type": self.resource_type,
             "unique_id": self.unique_id,

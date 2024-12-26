@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import BaseModel, ConfigDict, Field
 
 import dbt_governance.constants as constants
@@ -37,12 +35,12 @@ class GovernanceResult(BaseModel):
     Attributes:
         summary (GovernanceResultSummary): A summary of the governance results (e.g., total passed/failed).
         metadata (GovernanceResult): Metadata about the evaluation (e.g., timestamp, dbt version).
-        results (List[ValidationResult]): List of Validation check results detailed for each rule evaluation.
+        results (list[ValidationResult]): List of Validation check results detailed for each rule evaluation.
     """
 
     summary: GovernanceResultSummary = Field(..., description="Summary statistics about the governance evaluation.")
     metadata: GovernanceResultMetadata = Field(..., description="Metadata about the governance evaluation.")
-    results: List[ValidationResult] = Field(..., description="List of validation results for each rule evaluation.")
+    results: list[ValidationResult] = Field(..., description="List of validation results for each rule evaluation.")
 
     def to_dict(self) -> dict:
         """Convert the GovernanceResult to a dictionary for JSON serialization."""

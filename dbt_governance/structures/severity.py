@@ -16,10 +16,6 @@ class Severity(Enum):
     MEDIUM = "medium"
     LOW = "low"
 
-    def __str__(self) -> str:
-        """Return the value of the Enum for its string representation."""
-        return self.value
-
     @staticmethod
     def default_rule_severity() -> str:
         """Return the default severity for a governance rule."""
