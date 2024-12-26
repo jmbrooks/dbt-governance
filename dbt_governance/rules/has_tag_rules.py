@@ -1,5 +1,6 @@
-from typing import List, Optional, Union
+from typing import List, Optional
 
+from dbt_governance.rule_handler import append_evaluation_result
 from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
 
 
@@ -8,6 +9,7 @@ def has_tag(
     manifest,
     project_path: str,
     tag_name: str,
+    column_check_type: Optional[str] = None,
     select: Optional[str] = None,
     match_type: Optional[str] = None,
 ) -> List[ValidationResult]:
@@ -18,6 +20,11 @@ def has_tag(
         manifest (dbt.contracts.graph.manifest.Manifest): dbt manifest artifact object.
         project_path (str): The path to the dbt project directory.
         tag_name (str): The name of the required tag
+        column_check_type (str): The type column check to rule, default None means column(s) are not being checked,
+            and the rule evaluation is being run at the node (e.g. model, source, snapshot) level. Other values can be:
+            1) 'all' - check all columns have the tag (uncommon)
+            2) 'any' - check if any column (at least one) has the tag
+            2) 'none' - check that no columns have the tag
         select (Optional[str]): A string to filter nodes to test.
         match_type (Optional[str]): The type of match to use for filtering nodes to test.
 
@@ -65,29 +72,15 @@ def has_tag(
 
         # Check for the meta tag
         model_tags = node.config.tags if node.config.tags else node.tags
+        is_passing_evaluation = tag_name in model_tags
 
-        if tag_name in model_tags:
-            results.append(
-                ValidationResult(
-                    rule_name=rule.name,
-                    rule_severity=rule.severity,
-                    dbt_project_path=project_path,
-                    resource_type=node.resource_type,
-                    unique_id=node.unique_id,
-                    status=ValidationStatus.PASSED,
-                )
-            )
-        else:
-            results.append(
-                ValidationResult(
-                    rule_name=rule.name,
-                    rule_severity=rule.severity,
-                    dbt_project_path=project_path,
-                    resource_type=node.resource_type,
-                    unique_id=node.unique_id,
-                    status=ValidationStatus.FAILED,
-                    reason=f"Model {node_id} is missing required '{tag_name}' tag.",
-                )
-            )
+        append_evaluation_result(
+            is_passing_evaluation=is_passing_evaluation,
+            results=results,
+            rule=rule,
+            project_path=project_path,
+            node=node,
+            failed_evaluation_description=f"Model {node_id} is missing required '{tag_name}' tag.",
+        )
 
     return results

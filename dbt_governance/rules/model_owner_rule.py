@@ -54,7 +54,8 @@ def model_owner_rule(
                     resource_type=node.resource_type,
                     unique_id=node.unique_id,
                     status=ValidationStatus.FAILED,
-                    reason=f"Model {node_id} is missing '{owner_meta_property_name}' meta property for model ownership.",
+                    reason=f"Model {node_id} is missing '{owner_meta_property_name}' meta property for "
+                           f"model ownership.",
                 )
             )
 

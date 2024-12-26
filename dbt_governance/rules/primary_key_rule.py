@@ -17,7 +17,7 @@ def validate_primary_key_rule(rule: GovernanceRule, manifest: Manifest, project_
     Returns:
         List[ValidationResult]: Validation results for the rule.
     """
-    results: List[ValidationResult] = list()
+    results: List[ValidationResult] = []
 
     for model_id, model in manifest.nodes.items():
         # Skip non-models
