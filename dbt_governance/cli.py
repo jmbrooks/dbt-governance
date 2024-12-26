@@ -6,8 +6,9 @@ import yaml
 import dbt_governance.constants as constants
 import dbt_governance.utils as utils
 from dbt_governance import __version__
-from dbt_governance.check import evaluate_rules, load_rules
-from dbt_governance.config import load_config, validate_config_structure
+from dbt_governance.initialize import load_rules
+from dbt_governance.tasks import evaluate_task, list_rules_task, validate_config_task
+from dbt_governance.config import load_config
 from dbt_governance.logging_config import green, logger, red, yellow
 from dbt_governance.structures.severity import Severity
 from dbt_governance.structures.validation_result import ValidationStatus
@@ -17,7 +18,6 @@ from dbt_governance.structures.validation_result import ValidationStatus
 @click.version_option(__version__, "--version", "-V", prog_name=constants.PROJECT_NAME)
 def cli() -> None:
     """dbt Governance Tool: Manage and enforce governance rules for dbt projects."""
-    pass
 
 
 @cli.command()
@@ -40,9 +40,11 @@ def cli() -> None:
 @click.option(
     "--severity",
     type=click.Choice([severity.value for severity in Severity]),
-    help="Filter results by severity (e.g., 'critical', 'high', 'medium', 'low').",
+    # nargs=-1,
+    multiple=True,
+    help="Filter results by one or more severities (e.g., 'critical', 'high', 'medium', 'low').",
 )
-def check(project_path: str, project_paths: List[str], rules_file: str, severity: str) -> None:
+def evaluate(project_path: str, project_paths: List[str], rules_file: str, severity: str) -> None:
     """Run governance checks on the specified dbt project(s)."""
     config = load_config(project_path, project_paths, rules_file)
     output_file_path = config.output_path
@@ -58,14 +60,15 @@ def check(project_path: str, project_paths: List[str], rules_file: str, severity
     # Filter rules by severity, if specified
     rules = governance_rules_config.rules
     if severity:
-        rules = [rule for rule in rules if str(rule.severity) == severity.lower()]
+        logger.info(f"Limiting severity to {', '.join(severity)}")
+        rules = [rule for rule in rules if str(rule.severity) in severity]
 
     # Get scope of dbt projects to evaluate
     project_paths = config.get_project_paths()
     click.echo(f"dbt-governance project path(s) scope: {', '.join(project_paths)}")
 
     # Evaluate configured and selected rules against dbt project(s)
-    governance_evaluation = evaluate_rules(rules, project_paths, check_uuid, __version__)
+    governance_evaluation = evaluate_task(rules, project_paths, check_uuid, __version__)
     logger.debug(f"Rule evaluation results: {governance_evaluation}")
 
     # Output results
@@ -86,10 +89,12 @@ def check(project_path: str, project_paths: List[str], rules_file: str, severity
     total_passed = sum(data["passed"] for data in severity_summary.values())
     overall_pass_rate = (total_passed / total_evaluated) * 100 if total_evaluated > 0 else 100
 
+    click.echo("\nGovernance Evaluation Results:")
+
     # Check pass rate acceptance thresholds
     thresholds = governance_rules_config.rule_evaluation_config.pass_rate_acceptance_thresholds
     if thresholds:
-        click.echo("\nPass Rate Acceptance Check:")
+        click.echo("\nPass Rate Acceptance By Severity:")
         for severity, data in severity_summary.items():
             evaluated = data["evaluated"]
             passed = data["passed"]
@@ -109,8 +114,6 @@ def check(project_path: str, project_paths: List[str], rules_file: str, severity
                     f"  {severity.capitalize()} - Passed: {passed}, Evaluated: {evaluated}, Pass Rate: "
                     f"{pass_rate:.2f}% (No threshold set)"
                 )
-
-    click.echo("\nGovernance Check Results:")
 
     click.echo("\nSummary:")
     click.echo(f"  Total Evaluations: {governance_evaluation.summary.total_evaluations}")
@@ -232,15 +235,11 @@ def check(project_path: str, project_paths: List[str], rules_file: str, severity
     help="Path to a custom rules file.",
 )
 def list_rules(project_path: str, project_paths: List[str], rules_file: str) -> None:
-    """List active governance rules."""
-    config = load_config(project_path, project_paths, rules_file)
+    """List all configured and enabled governance rules."""
     click.echo("Listing active governance rules...")
-    governance_rules_config = load_rules(config.global_rules_file)
-    for rule in governance_rules_config.rules:
-        if rule.enabled:
-            click.echo(f"- {rule.name} (Severity: {rule.severity}): {rule.description}")
-        else:
-            logger.debug(f"Rule '{rule.name}' is not enabled, thus it is not included in the output listed rules.")
+    governance_rules = list_rules_task(project_path, project_paths, rules_file)
+    for rule in governance_rules:
+        click.echo(f"- {rule.name} (Severity: {rule.severity}): {rule.description}")
 
 
 # Command: Validate Configuration File
@@ -252,30 +251,39 @@ def list_rules(project_path: str, project_paths: List[str], rules_file: str) -> 
     help="Path to the configuration file to validate.",
 )
 def validate_config(config_file: str) -> None:
-    """Validate the configuration file."""
+    """Validate the dbt-governance project configuration file."""
     click.echo(f"Validating configuration file: {config_file}")
-    try:
-        with open(config_file, "r") as f:
-            config = yaml.safe_load(f)
-    except yaml.YAMLError as e:
-        click.echo(f"YAML Parsing Error: {e}", err=True)
-        return
-    except Exception as e:
-        click.echo(f"Failed to load configuration file: {e}", err=True)
-        return
 
-    errors = validate_config_structure(config)
-    if errors:
+    is_valid, valid_config_message = validate_config_task(config_file)
+
+    if not is_valid:
         click.echo("Configuration validation failed with the following errors:")
-        for error in errors:
-            click.echo(f"- {error}", err=True)
-    else:
-        click.echo(green("Configuration file is valid!"))
-    # Log the loaded configuration (sensitive keys redacted)
-    redacted_config = config.copy()
-    if redacted_config and "api_token" in redacted_config.get("dbt_cloud"):
-        redacted_config["dbt_cloud"]["api_token"] = "REDACTED"  # nosec B105 (no hardcode issue, false flag)
-    logger.debug(f"Loaded Configuration: {redacted_config}")
+
+    click.echo(valid_config_message)
+
+    # try:
+    #     with open(config_file, "r") as f:
+    #         config = yaml.safe_load(f)
+    # except yaml.YAMLError as e:
+    #     click.echo(f"YAML Parsing Error: {e}", err=True)
+    #     return
+    # except Exception as e:
+    #     click.echo(f"Failed to load configuration file: {e}", err=True)
+    #     return
+    #
+    # errors = validate_config_structure(config)
+    # if errors:
+    #     click.echo("Configuration validation failed with the following errors:")
+    #     for error in errors:
+    #         click.echo(f"- {error}", err=True)
+    # else:
+    #     click.echo(green("Configuration file is valid!"))
+    #
+    # # Log the loaded configuration (sensitive keys redacted)
+    # redacted_config = config.copy()
+    # if redacted_config and "api_token" in redacted_config.get("dbt_cloud"):
+    #     redacted_config["dbt_cloud"]["api_token"] = "REDACTED"  # nosec B105 (no hardcode issue, false flag)
+    # logger.debug(f"Loaded Configuration: {redacted_config}")
 
 
 if __name__ == "__main__":
