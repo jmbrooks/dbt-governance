@@ -70,6 +70,6 @@ def test_validation_result_defaults() -> None:
         unique_id="model.my_project.dim_date",
     )
     assert result.rule_name == "Default Test Rule"
-    assert result.status == ValidationStatus.WARNING
+    assert result.status == ValidationStatus.WARNING.value
     assert result.rule_severity == Severity.default_rule_severity()
     assert result.reason is None

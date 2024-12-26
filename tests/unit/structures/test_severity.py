@@ -19,10 +19,10 @@ def test_severity_names() -> None:
 
 def test_severity_string_representation() -> None:
     """Test the string representation of Severity Enum."""
-    assert str(Severity.CRITICAL) == "critical"
-    assert str(Severity.HIGH) == "high"
-    assert str(Severity.MEDIUM) == "medium"
-    assert str(Severity.LOW) == "low"
+    assert Severity.CRITICAL.value == "critical"
+    assert Severity.HIGH.value == "high"
+    assert Severity.MEDIUM.value == "medium"
+    assert Severity.LOW.value == "low"
 
 
 def test_severity_iteration() -> None:

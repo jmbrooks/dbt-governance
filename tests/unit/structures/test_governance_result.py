@@ -32,6 +32,18 @@ def test_governance_result_summary() -> None:
     assert summary.total_failed == 2
 
 
+def test_governance_result_summary_pass_rate() -> None:
+    """Test GovernanceResultSummary's pass_rate property."""
+    summary = GovernanceResultSummary(total_evaluations=1000, total_passed=1000, total_failed=0)
+    assert summary.pass_rate == 1.0
+
+    summary = GovernanceResultSummary(total_evaluations=10, total_passed=8, total_failed=2)
+    assert summary.pass_rate == 0.8
+
+    summary = GovernanceResultSummary(total_evaluations=0, total_passed=0, total_failed=0)
+    assert summary.pass_rate == 0.0
+
+
 def test_governance_result_summary_evaluations() -> None:
     """Ensure total_evaluations = total_passed + total_failed."""
     summary = GovernanceResultSummary(total_evaluations=10, total_passed=8, total_failed=2)
