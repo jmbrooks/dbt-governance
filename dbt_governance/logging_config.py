@@ -8,7 +8,7 @@ from pathlib import Path
 import colorama
 
 # Log file paths
-LOG_DIR = Path(Path.expanduser("~/dbt-governance-logs"))
+LOG_DIR = Path("~/dbt-governance-logs").expanduser()
 DEBUG_LOG_FILE = LOG_DIR / "debug.log"
 ERROR_LOG_FILE = LOG_DIR / "error.log"
 

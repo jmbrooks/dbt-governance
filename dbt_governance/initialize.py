@@ -22,6 +22,7 @@ def load_rules(rules_file: Optional[Union[str, Path]], include_not_enabled: bool
         FileNotFoundError: If the configured governance rules config file is not found.
         ValueError: If the rules file cannot be loaded for any reason other than not being found.
     """
+    rules_file = Path(rules_file) if rules_file else None
     if not rules_file or not Path.exists(rules_file):
         raise FileNotFoundError(f"Rules file not found: {rules_file}")
 

@@ -15,7 +15,7 @@ def has_meta_property(
     Args:
         rule (GovernanceRule): The rule to validate.
         manifest (dbt.contracts.graph.manifest.Manifest): dbt manifest artifact object.
-        project_path (str): The path to the dbt project directory.
+        project_path (Path): The path to the dbt project directory.
         meta_property_name (str): The name of the required meta property.
         meta_property_allowed_values (Union[List[str], str]): The value(s) of the meta property that allowed in order
             for the check to pass, if required for validation.

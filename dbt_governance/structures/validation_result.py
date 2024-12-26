@@ -1,4 +1,5 @@
 from enum import Enum
+from pathlib import Path
 from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -38,7 +39,7 @@ class ValidationResult(BaseModel):
     Attributes:
         rule_name (str): The name of the rule being validated.
         rule_severity (Severity): The severity of the rule based on the validation status.
-        dbt_project_path (str): The path to the dbt project directory.
+        dbt_project_path (Path): The path to the dbt project directory.
         resource_type (str): The type of resource being validated (e.g., model, snapshot, source).
         unique_id (str): The unique identifier of the resource being validated (e.g. model.my_project.dim_date).
         status (ValidationStatus): The status of the rule validation, indicating whether it passed, failed, etc.
@@ -49,7 +50,7 @@ class ValidationResult(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
 
     rule_name: str = Field(..., description="The name of the rule being validated.")
-    dbt_project_path: str = Field(..., description="The path to the dbt project directory.")
+    dbt_project_path: Path = Field(..., description="The path to the dbt project directory.")
     resource_type: str = Field(..., description="The type of resource being validated.")
     unique_id: str = Field(..., description="The unique identifier of the resource being validated.")
     status: ValidationStatus = Field(..., description="The status of the rule validation.")
@@ -63,7 +64,7 @@ class ValidationResult(BaseModel):
         return {
             "rule_name": self.rule_name,
             "rule_severity": self.rule_severity,  # Convert Enum to string
-            "dbt_project_path": self.dbt_project_path,
+            "dbt_project_path": str(self.dbt_project_path),
             "resource_type": self.resource_type,
             "unique_id": self.unique_id,
             "status": str(self.status),  # Convert Enum to string

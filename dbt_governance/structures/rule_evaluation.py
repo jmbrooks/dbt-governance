@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -12,7 +13,7 @@ class RuleEvaluation(BaseModel):
     model_config = ConfigDict(strict=True)
 
     rule: GovernanceRule = Field(..., description="The governance rule being evaluated.")
-    dbt_project_path: str = Field(..., description="The path to the dbt project directory.")
+    dbt_project_path: Path = Field(..., description="The path to the dbt project directory.")
     dbt_project_version: str = Field(..., description="The dbt version for the project being evaluated.")
     dbt_project_manifest_generated_at: str = Field(
         ..., description="The timestamp when the dbt project manifest was generated."

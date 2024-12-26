@@ -62,7 +62,7 @@ def evaluate(project_path: str, project_paths: list[str], rules_file: str, sever
 
     # Get scope of dbt projects to evaluate
     project_paths = config.get_project_paths()
-    click.echo(f"dbt-governance project path(s) scope: {', '.join(project_paths)}")
+    click.echo(f"dbt-governance project path(s) scope: {', '.join(str(path) for path in project_paths)}")
 
     # Evaluate configured and selected rules against dbt project(s)
     governance_evaluation = evaluate_task(rules, project_paths, check_uuid, __version__)
