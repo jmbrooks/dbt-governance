@@ -129,7 +129,7 @@ def test_write_json_result(tmp_path: Path) -> None:
     assert output_file_path.exists()
 
     # Read the file and validate its content
-    with open(output_file_path, "r") as f:
+    with Path.open(output_file_path, "r") as f:
         written_data = json.load(f)
 
     assert written_data == sample_data
@@ -147,7 +147,7 @@ def test_write_json_result_with_string_path(tmp_path: Path) -> None:
     assert Path(output_file_path).exists()
 
     # Verify the content
-    with open(output_file_path, "r") as f:
+    with Path.open(output_file_path, "r") as f:
         written_data = json.load(f)
     assert written_data == sample_data
 
@@ -164,7 +164,7 @@ def test_write_json_result_empty_data(tmp_path: Path) -> None:
     assert output_file_path.exists()
 
     # Verify the content
-    with open(output_file_path, "r") as f:
+    with Path.open(output_file_path, "r") as f:
         written_data = json.load(f)
     assert written_data == sample_data  # Should write an empty JSON object
 

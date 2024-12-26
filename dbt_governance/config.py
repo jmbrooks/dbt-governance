@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Optional
 
 import yaml
@@ -16,8 +17,8 @@ def load_global_config() -> GovernanceConfig:
     """
     logger.debug(f"Loading global configuration from: {constants.DEFAULT_CONFIG_PATH}")
 
-    if os.path.exists(constants.DEFAULT_CONFIG_PATH):
-        with open(constants.DEFAULT_CONFIG_PATH, "r") as file:
+    if Path.exists(constants.DEFAULT_CONFIG_PATH):
+        with Path.open(constants.DEFAULT_CONFIG_PATH, "r") as file:
             governance_config = GovernanceConfig.from_dict(yaml.safe_load(file))
     else:
         logger.warning(f"Global configuration file not found: {constants.DEFAULT_CONFIG_PATH}")
@@ -27,13 +28,13 @@ def load_global_config() -> GovernanceConfig:
 
 
 def load_config(
-    project_path: Optional[str] = None, project_paths: Optional[list[str]] = None, rules_file: Optional[str] = None
+    project_path: Optional[Path] = None, project_paths: Optional[list[Path]] = None, rules_file: Optional[str] = None
 ) -> GovernanceConfig:
     """Merge configurations from global config, environment variables, and CLI options.
 
     Args:
-        project_path (Optional[str]): Path to a single dbt project.
-        project_paths (Optional[list[str]]): List of dbt project paths.
+        project_path (Optional[Path]): Path to a single dbt project.
+        project_paths (Optional[list[Path]]): List of dbt project paths.
         rules_file (Optional[str]): Path to a custom rules file.
 
     Returns:
@@ -84,8 +85,8 @@ def validate_config_structure(config: GovernanceConfig) -> list[str]:
 
         # Confirm each project path is default_projects exists as a valid Path
         for project_path in dbt_cloud_config.default_projects:
-            errors.append(f"dbt_cloud.default_projects: Invalid project path: {project_path}") if not os.path.exists(
-                project_path
+            errors.append(f"dbt_cloud.default_projects: Invalid project path: {project_path}") if not Path.exists(
+                Path(project_path)
             ) else None
 
     return errors

@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from typing import Any, Union
 
@@ -21,21 +20,21 @@ from dbt_governance.structures.rule_evaluation import RuleEvaluation
 from dbt_governance.structures.validation_result import ValidationStatus
 
 
-def load_global_rules_config(rules_file: str) -> dict[str, Any]:
+def load_global_rules_config(rules_file: Path) -> dict[str, Any]:
     """Load the global configuration for governance rules from a YAML file.
 
     Args:
-        rules_file (str): Path to the rules file.
+        rules_file (Path): Path to the rules file.
 
     Returns:
         dict: The global configuration dictionary.
     """
-    if not rules_file or not os.path.exists(rules_file):
+    if not rules_file or not Path.exists(rules_file):
         logger.error(f"Rules file not found: {rules_file}")
         return {}
 
     try:
-        with open(rules_file, "r") as f:
+        with Path.open(rules_file, "r") as f:
             data = yaml.safe_load(f)
         return data.get("global_config", {})
     except Exception as e:

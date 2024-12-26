@@ -1,5 +1,5 @@
-import os
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Union
 
 import yaml
 
@@ -9,11 +9,11 @@ from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig, RuleEvaluationConfig
 
 
-def load_rules(rules_file: Optional[str], include_not_enabled: bool = False) -> GovernanceRulesConfig:
+def load_rules(rules_file: Optional[Union[str, Path]], include_not_enabled: bool = False) -> GovernanceRulesConfig:
     """Load governance rules and thresholds from a YAML file.
 
     Args:
-        rules_file (str): Path to the rules file.
+        rules_file (Union[str, Path]): Path to the rules file.
         include_not_enabled (bool): Default False; if set True, return both enabled and not enabled rules.
     Returns:
         GovernanceRulesConfig: A dataclass containing the rules and evaluation configuration.
@@ -22,11 +22,11 @@ def load_rules(rules_file: Optional[str], include_not_enabled: bool = False) -> 
         FileNotFoundError: If the configured governance rules config file is not found.
         ValueError: If the rules file cannot be loaded for any reason other than not being found.
     """
-    if not rules_file or not os.path.exists(rules_file):
+    if not rules_file or not Path.exists(rules_file):
         raise FileNotFoundError(f"Rules file not found: {rules_file}")
 
     try:
-        with open(rules_file, "r") as f:
+        with Path.open(rules_file, "r") as f:
             yaml_data = yaml.safe_load(f) or {}
 
         rule_evaluation_config_data = yaml_data.get("rule_evaluation_config", {})

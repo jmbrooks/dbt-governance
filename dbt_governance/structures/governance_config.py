@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -49,8 +50,8 @@ class GovernanceConfig(BaseModel):
 
     """
 
-    project_path: str = Field("", description="Path to a single dbt project.")
-    project_paths: list[str] = Field([], description="List of dbt project paths.")
+    project_path: Path = Field("", description="Path to a single dbt project.")
+    project_paths: list[Path] = Field([], description="List of dbt project paths.")
     output_path: str = Field(constants.DEFAULT_OUTPUT_FILE_NAME, description="Path to the output file.")
     global_rules_file: str = Field(constants.DEFAULT_RULES_FILE_NAME, description="Path to a global rules file.")
     dbt_cloud: Optional[DbtCloudConfig] = Field(None, description="Configuration for dbt Cloud API interactions.")
@@ -69,7 +70,7 @@ class GovernanceConfig(BaseModel):
             ),
         )
 
-    def get_project_paths(self) -> list[str]:
+    def get_project_paths(self) -> list[Path]:
         """Retrieve the list of project paths from the configuration.
 
         Returns:
@@ -78,7 +79,7 @@ class GovernanceConfig(BaseModel):
         Raises:
             ValueError: If no project paths are found in the configuration.
         """
-        project_path_lists: list[str] = []
+        project_path_lists: list[Path] = []
         if self.project_path:
             project_path_lists.append(self.project_path)
         elif self.project_paths:

@@ -14,7 +14,7 @@ def test_manifest_loading(dbt_project: DbtProject, mock_manifest_data: dict, tmp
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Write mock manifest data to the file
-    with open(manifest_path, "w") as f:
+    with Path.open(manifest_path, "w") as f:
         json.dump(mock_manifest_data, f)
 
     # Mock the Manifest.from_dict method
@@ -40,7 +40,7 @@ def test_dbt_version(dbt_project: DbtProject, mock_manifest_data: dict, tmp_path
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Write mock manifest data to the file
-    with open(manifest_path, "w") as f:
+    with Path.open(manifest_path, "w") as f:
         json.dump(mock_manifest_data, f)
 
     # Mock the Manifest.from_dict method
@@ -61,7 +61,7 @@ def test_generated_at(dbt_project: DbtProject, mock_manifest_data: dict, tmp_pat
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Write mock manifest data to the file
-    with open(manifest_path, "w") as f:
+    with Path.open(manifest_path, "w") as f:
         json.dump(mock_manifest_data, f)
 
     # Mock the Manifest.from_dict method
@@ -82,7 +82,7 @@ def test_get_model_nodes(dbt_project: DbtProject, mock_manifest_data: dict, tmp_
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Write mock manifest data to the file
-    with open(manifest_path, "w") as f:
+    with Path.open(manifest_path, "w") as f:
         json.dump(mock_manifest_data, f)
 
     # Mock the Manifest.from_dict method

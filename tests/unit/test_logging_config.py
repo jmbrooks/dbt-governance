@@ -1,5 +1,5 @@
 import logging
-import os
+from pathlib import Path
 
 from dbt_governance.logging_config import (
     DEBUG_LOG_FILE,
@@ -15,13 +15,13 @@ from dbt_governance.logging_config import (
 
 def test_log_directory_exists() -> None:
     """Test that the log directory is created."""
-    assert os.path.exists(LOG_DIR), f"Log directory {LOG_DIR} does not exist."
+    assert Path.exists(LOG_DIR), f"Log directory {LOG_DIR} does not exist."
 
 
 def test_log_file_paths() -> None:
     """Test that the debug and error log file paths are correct."""
-    assert DEBUG_LOG_FILE == os.path.join(LOG_DIR, "debug.log"), "DEBUG_LOG_FILE path is incorrect"
-    assert ERROR_LOG_FILE == os.path.join(LOG_DIR, "error.log"), "ERROR_LOG_FILE path is incorrect"
+    assert DEBUG_LOG_FILE == LOG_DIR / "debug.log", "DEBUG_LOG_FILE path is incorrect"
+    assert ERROR_LOG_FILE == LOG_DIR / "error.log", "ERROR_LOG_FILE path is incorrect"
 
 
 def test_logger_handlers() -> None:

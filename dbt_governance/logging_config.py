@@ -3,13 +3,14 @@ import os
 import sys
 from enum import Enum
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 import colorama
 
 # Log file paths
-LOG_DIR = os.path.expanduser("~/dbt-governance-logs")
-DEBUG_LOG_FILE = os.path.join(LOG_DIR, "debug.log")
-ERROR_LOG_FILE = os.path.join(LOG_DIR, "error.log")
+LOG_DIR = Path(Path.expanduser("~/dbt-governance-logs"))
+DEBUG_LOG_FILE = LOG_DIR / "debug.log"
+ERROR_LOG_FILE = LOG_DIR / "error.log"
 
 if sys.platform == "win32" and (not os.getenv("TERM") or os.getenv("TERM") == "None"):
     colorama.init(wrap=True)
@@ -32,7 +33,7 @@ class Color(Enum):
 
 
 # Base log directory
-os.makedirs(LOG_DIR, exist_ok=True)
+Path.mkdir(LOG_DIR, exist_ok=True, parents=True)
 
 # Logging format
 LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -64,10 +65,7 @@ logger = logging.getLogger("dbt_governance")
 
 def return_in_color(text: str, color_code: Color, use_color: bool = True) -> str:
     """Output the given text in the specified color, so long as `use_color` is set to True (the default)."""
-    if use_color:
-        return "{}{}{}".format(color_code.value, text, Color.RESET_ALL.value)
-    else:
-        return text
+    return "{}{}{}".format(color_code.value, text, Color.RESET_ALL.value) if use_color else text
 
 
 def green(text: str) -> str:

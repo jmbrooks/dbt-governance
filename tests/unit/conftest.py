@@ -46,7 +46,7 @@ def sample_manifest() -> Any:
     if not manifest_path.exists():
         raise FileNotFoundError(f"Sample manifest file not found at {manifest_path}")
 
-    with open(manifest_path, "r") as f:
+    with Path.open(manifest_path, "r") as f:
         return json.load(f)
 
 
@@ -57,6 +57,6 @@ def tmp_manifest(tmp_path: Path, sample_manifest: str) -> Path:
     target_dir = sample_project / "target"
     target_dir.mkdir(parents=True)
     manifest_path = target_dir / "manifest3.json"
-    with open(manifest_path, "w") as f:
+    with Path.open(manifest_path, "w") as f:
         json.dump(sample_manifest, f)
     return Path(manifest_path)
