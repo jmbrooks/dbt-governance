@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import yaml
 
@@ -17,7 +17,7 @@ from dbt_governance.structures.governance_result import (
     GovernanceResultSummary,
 )
 from dbt_governance.structures.governance_rule import GovernanceRule
-from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig, RuleEvaluationConfig
+from dbt_governance.structures.rule_evaluation import RuleEvaluation
 from dbt_governance.structures.validation_result import ValidationStatus
 
 
@@ -43,52 +43,13 @@ def load_global_rules_config(rules_file: str) -> Dict[str, Any]:
         return {}
 
 
-def load_rules(rules_file: Optional[str]) -> GovernanceRulesConfig:
-    """Load governance rules and thresholds from a YAML file.
-
-    Args:
-        rules_file (str): Path to the rules file.
-
-    Returns:
-        GovernanceRulesConfig: A dataclass containing the rules and evaluation configuration.
-
-    Raises:
-        FileNotFoundError: If the configured governance rules config file is not found.
-        ValueError: If the rules file cannot be loaded for any reason other than not being found.
-    """
-    if not rules_file or not os.path.exists(rules_file):
-        raise FileNotFoundError(f"Rules file not found: {rules_file}")
-
-    try:
-        with open(rules_file, "r") as f:
-            yaml_data = yaml.safe_load(f) or {}
-
-        rule_evaluation_config_data = yaml_data.get("rule_evaluation_config", {})
-        rules_data = yaml_data.get("rules", [])
-
-        rule_evaluation_config = RuleEvaluationConfig.from_dict(rule_evaluation_config_data)
-        rules = []
-        for rule_data in rules_data:
-            try:
-                rules.append(GovernanceRule.from_dict(rule_data))
-            except TypeError as e:
-                logger.error(f"Invalid rule format in rules file: {rule_data}. Error: {e}")
-
-        return GovernanceRulesConfig(
-            rule_evaluation_config=rule_evaluation_config,
-            rules=rules,
-        )
-    except Exception as e:
-        raise ValueError(f"Failed to load governance rules: {e}")
-
-
-def evaluate_rules(
+def evaluate_task(
     rules: List[GovernanceRule],
     project_paths: List[str],
     check_uuid: str,
     dbt_governance_version: str,
 ) -> GovernanceResult:
-    """Evaluate governance rules against dbt project metadata.
+    """CLI task action to evaluate governance rules against dbt project metadata.
 
     Args:
         rules (List[GovernanceRule]): List of governance rules.
@@ -102,7 +63,7 @@ def evaluate_rules(
     Raises:
         FileNotFoundError: If the dbt project manifest file is not found.
     """
-    results = []
+    all_results = []
 
     # Load project(s) manifest
     for project_path in project_paths:
@@ -123,42 +84,55 @@ def evaluate_rules(
                 logger.info(f"Skipping rule '{rule.name}' as it not marked as enabled in the rules config.")
                 continue
 
+            if rule.dbt_selection_clause:
+                logger.debug(f"Applying dbt selection clause: {rule.dbt_selection_clause}")
+                # selection_result = dbt_client.get_model_unique_ids_from_manifest()
+
+            rule_evaluation = RuleEvaluation(
+                rule=rule,
+                dbt_project_path=project_path,
+                dbt_project_version=dbt_client.dbt_version,
+                dbt_project_manifest_generated_at=str(dbt_client.generated_at),
+                dbt_selection_syntax=rule.dbt_selection_clause,
+            )
+
             # Evaluation logic
             # 1. Evaluate 'exception' rules with uniquely specific checks
             if rule.name == "Owner Metadata":
-                results.extend(model_owner_rule(rule, manifest_data, project_path))
+                rule_evaluation.validation_results.extend(model_owner_rule(rule, manifest_data, project_path))
             if rule.name == "Primary Key Test":
-                results.extend(validate_primary_key_rule(rule, manifest_data, project_path))
+                rule_evaluation.validation_results.extend(validate_primary_key_rule(rule, manifest_data, project_path))
             # 2. Evaluate generic pattern rules with a common function
-            if rule.checks.get("type") == "has_meta":
-                results.extend(
+            if rule.type == "has_meta":
+                rule_evaluation.validation_results.extend(
                     has_meta_property(
                         rule,
                         manifest_data,
                         project_path,
-                        rule.checks.get("required_property"),
-                        meta_property_allowed_values=rule.checks.get("allowed_values"),
+                        rule.args.get("required_property"),
+                        meta_property_allowed_values=rule.args.get("allowed_values"),
                     )
                 )
-            if rule.checks.get("type") == "has_tag":
-                results.extend(
+            if rule.type == "has_tag":
+                rule_evaluation.validation_results.extend(
                     has_tag(
                         rule,
                         manifest_data,
                         project_path,
-                        rule.checks.get("required_tag"),
-                        select=rule.checks.get("select"),
-                        match_type=rule.checks.get("match_type"),
+                        rule.args.get("required_tag"),
+                        select=rule.args.get("select"),
+                        match_type=rule.args.get("match_type"),
                     )
                 )
 
-            logger.debug(f"Rule '{rule.name}' evaluated with status: {results[-1].status}")
+            all_results.extend(rule_evaluation.validation_results)
+            logger.debug(f"Rule '{rule.name}' evaluated with status: {all_results[-1].status}")
 
     # Summarize results
     summary = GovernanceResultSummary(
-        total_evaluations=len(results),
-        total_passed=sum(1 for result in results if result.status == ValidationStatus.PASSED),
-        total_failed=sum(1 for result in results if result.status == ValidationStatus.FAILED),
+        total_evaluations=len(all_results),
+        total_passed=sum(1 for result in all_results if result.status == ValidationStatus.PASSED),
+        total_failed=sum(1 for result in all_results if result.status == ValidationStatus.FAILED),
     )
 
     # Metadata
@@ -168,4 +142,4 @@ def evaluate_rules(
         dbt_governance_version=dbt_governance_version,
     )
 
-    return GovernanceResult(summary=summary, metadata=metadata, results=results)
+    return GovernanceResult(summary=summary, metadata=metadata, results=all_results)

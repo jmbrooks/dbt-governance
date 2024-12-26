@@ -1,3 +1,14 @@
+# dbt and project-specific
+dbt_modules/
+dbt_packages/
+.dbt/
+logs/
+target/
+profiles.yml
+
+*governance-results.json
+dbt-governance-logs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -29,11 +40,6 @@ var/
 .mypy_cache/
 .dmypy.json
 .user.yml
-profiles.yml
-
-*governance-results.json
-dbt-governance-logs/
-logs/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -80,9 +86,6 @@ virtualenv/
 
 # Sphinx documentation
 docs/_build/
-
-# PyBuilder
-target/
 
 # Ipython Notebook
 .ipynb_checkpoints
