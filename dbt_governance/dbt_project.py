@@ -2,51 +2,31 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
+from typing_extensions import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field, PrivateAttr
 
 from dbt.cli.main import dbtRunner, dbtRunnerResult
 from dbt.contracts.graph.manifest import Manifest
 from dbt.graph.graph import Graph
 from dbt.graph.selector import NodeSelector
 
+import dbt_governance.utils as utils
+
 
 class DbtProject(BaseModel):
-    """A representation of a single dbt project, including the project path, name, dbt version, and Manifest object."""
-    model_config = ConfigDict(frozen=True, strict=True)
+    """A client for an individual dbt project, for interacting with dbt artifacts (such as the Manifest).
 
-    project_path: str = Field(..., description="The path to the dbt project directory.")
-    project_name: str = Field(..., description="The name of the dbt project.")
-    dbt_version: str = Field(..., description="The dbt version used to generate the Manifest.")
-    manifest: Manifest = Field(..., description="The dbt Manifest object.")
+    Attributes:
+        project_path (Path): Path to the dbt project root directory.
+        _manifest (Manifest): The dbt Manifest object.
+    """
+    model_config = ConfigDict(strict=True)
 
-    def __bool__(self):
-        """Check if the DbtProject object has any values set."""
-        return any(self.dict().values())
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DbtProject":
-        return cls(
-            project_path=data.get("project_path", ""),
-            project_name=data.get("project_name", ""),
-            dbt_version=data.get("dbt_version", ""),
-            manifest=Manifest.from_dict(data.get("manifest", {})),
-        )
-
-
-class DbtClient:
-    """A client for interacting with dbt artifacts such as the Manifest."""
-
-    def __init__(self, project_path: Union[Path, str]) -> None:
-        """
-        Initialize the DbtClient with the path to the dbt project.
-
-        Args:
-            project_path (Union[Path, str]): The root directory of the dbt project, as either a Path or string to the
-                project path.
-        """
-        self.project_path = Path(project_path)
-        self._manifest: Optional[Manifest] = None
+    project_path: Annotated[Union[str, Path], AfterValidator(utils.validate_dbt_path)] = Field(
+        ..., description="Path to the dbt project root directory."
+    )
+    _manifest: Optional[Manifest] = PrivateAttr(None)
 
     @property
     def manifest(self) -> Manifest:
@@ -63,6 +43,15 @@ class DbtClient:
         return self.manifest.metadata.generated_at
 
     @property
+    def dbt_schema_version(self) -> str:
+        """Get the dbt schema version used to generate the Manifest.
+
+        Returns:
+            str: The dbt schema version used to generate the Manifest.
+        """
+        return self.manifest.metadata.dbt_schema_version
+
+    @property
     def dbt_version(self) -> str:
         """Get the dbt version used to generate the Manifest.
 
@@ -70,6 +59,24 @@ class DbtClient:
             str: The dbt version used to generate the Manifest.
         """
         return self.manifest.metadata.dbt_version
+
+    @property
+    def project_id(self) -> str:
+        """The dbt project ID from the project Manifest.
+
+        Returns:
+            str: The dbt project ID.
+        """
+        return self.manifest.metadata.project_id
+
+    @property
+    def project_name(self) -> str:
+        """The dbt project name from the project Manifest.
+
+        Returns:
+            str: The dbt project name.
+        """
+        return self.manifest.metadata.project_name
 
     def load_manifest(self) -> Manifest:
         """Load the dbt Manifest file and return it as a typed Manifest object.
@@ -126,12 +133,6 @@ class DbtClient:
 
         # Create a Graph from the manifest
         graph = Graph(self.manifest)
-
-        # introspect manifest
-        # e.g. assert every public model has a description
-        for node in self.manifest.nodes.values():
-            if node.resource_type == "model" and node.access == "public":
-                assert node.description != "", f"{node.name} is missing a description"
 
         # reuse this manifest in subsequent commands to skip parsing
         dbt = dbtRunner(manifest=self.manifest)
