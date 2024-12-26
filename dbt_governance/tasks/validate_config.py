@@ -22,21 +22,22 @@ def validate_config_task(config_file: str) -> Tuple[bool, str]:
         is_valid_config = False
         validity_message = f"Failed to load configuration file: {err}"
 
-    # Create GovernanceConfig object from yaml data
-    dbt_governance_config = GovernanceConfig.from_dict(config)
-    errors = validate_config_structure(dbt_governance_config)
+    if is_valid_config:  # If config is still valid, validate the structure
+        # Create GovernanceConfig object from yaml data
+        dbt_governance_config = GovernanceConfig.from_dict(config)
+        errors = validate_config_structure(dbt_governance_config)
 
-    if errors:
-        for error in errors:
-            validity_message += f"- {error}"
+        if errors:
+            for error in errors:
+                validity_message += f"- {error}"
 
-    # Log the loaded configuration (sensitive keys redacted)
-    redacted_config = dbt_governance_config.copy()
-    if redacted_config and redacted_config.dbt_cloud.api_token:
-        redacted_config["dbt_cloud"]["api_token"] = "REDACTED"  # nosec B105 (no hardcode issue, false flag)
-    logger.debug(f"Loaded Configuration: {redacted_config}")
+        # Log the loaded configuration (sensitive keys redacted)
+        redacted_config = dbt_governance_config.model_copy()
+        if redacted_config and redacted_config.dbt_cloud.api_token:
+            redacted_config.dbt_cloud.api_token = "REDACTED"  # nosec B105 (no hardcode issue, false flag)
+        logger.debug(f"Loaded Configuration: {redacted_config}")
 
-    if not validity_message:  # If no errors, set to success validity message
-        validity_message = "Configuration file is valid!"
+        if not validity_message:  # If no errors, set to success validity message
+            validity_message = "Configuration file is valid!"
 
     return is_valid_config, validity_message
