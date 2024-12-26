@@ -1,99 +1,11 @@
 import os
-from typing import Any, Dict, List, Optional, TypedDict
-
-from pydantic import BaseModel, Field
+from typing import List, Optional
 
 import yaml
 
 import dbt_governance.constants as constants
 from dbt_governance.logging_config import logger
-
-# Default configuration structure
-DBT_CLOUD_CONFIG = TypedDict(
-    "DBT_CLOUD_CONFIG",
-    {
-        "api_token": Optional[str],
-        "organization_id": Optional[str],
-        "default_projects": List[str],
-    },
-)
-
-
-class DbtCloudConfig(BaseModel):
-    """A dbt Cloud configuration, for authentication and API interactions if using dbt Cloud.
-
-    Attributes:
-        api_token (Optional[str]): The dbt Cloud API token.
-        organization_id (Optional[str]): The dbt Cloud organization ID.
-        default_projects (List[str]): A list of default project names to use for dbt Cloud API interactions.
-
-    """
-
-    api_token: str = Field(..., description="The dbt Cloud API token.")
-    organization_id: str = Field(..., description="The dbt Cloud organization ID.")
-    default_projects: List[str] = Field([], description="A list of default project names to use for dbt Cloud API "
-                                                        "interactions.")
-
-
-class GovernanceConfig(BaseModel):
-    """A configuration object for the dbt-governance tool.
-
-    Attributes:
-        project_path (str): Path to a single dbt project.
-        project_paths (List[str]): List of dbt project paths.
-        output_path (str): Path to the output file.
-        global_rules_file (Optional[str]): Path to a global rules file.
-        dbt_cloud (DbtCloudConfig): Configuration for dbt Cloud API interactions.
-
-    """
-
-    project_path: str = Field("", description="Path to a single dbt project.")
-    project_paths: List[str] = Field([], description="List of dbt project paths.")
-    output_path: str = Field(constants.DEFAULT_OUTPUT_FILE_NAME, description="Path to the output file.")
-    global_rules_file: str = Field(constants.DEFAULT_RULES_FILE_NAME, description="Path to a global rules file.")
-    dbt_cloud: Optional[DbtCloudConfig] = Field(None, description="Configuration for dbt Cloud API interactions.")
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "GovernanceConfig":
-        return cls(
-            project_path=data.get("project_path", ""),
-            project_paths=data.get("project_paths", []),
-            output_path=data.get("output_path", constants.DEFAULT_OUTPUT_FILE_NAME),
-            global_rules_file=data.get("global_rules_file", constants.DEFAULT_RULES_FILE_NAME),
-            dbt_cloud=DbtCloudConfig(
-                api_token=data.get("dbt_cloud", {}).get("api_token", ""),
-                organization_id=data.get("dbt_cloud", {}).get("organization_id", ""),
-                default_projects=data.get("dbt_cloud", {}).get("default_projects", []),
-            ),
-        )
-
-    def get_project_paths(self) -> List[str]:
-        """Retrieve the list of project paths from the configuration.
-
-        Returns:
-            list: A list of project paths.
-
-        Raises:
-            ValueError: If no project paths are found in the configuration.
-        """
-        project_path_lists: List[str] = []
-        if self.project_path:
-            project_path_lists.append(self.project_path)
-        elif self.project_paths:
-            project_path_lists.extend(self.project_paths)
-        else:
-            raise ValueError("No project paths found in configuration.")
-
-        return project_path_lists
-
-
-DEFAULT_CONFIG = GovernanceConfig(
-    project_path="",
-    project_paths=[],
-    output_path=constants.DEFAULT_OUTPUT_FILE_NAME,
-    global_rules_file=constants.DEFAULT_RULES_FILE_NAME,
-    dbt_cloud=DbtCloudConfig(api_token="", organization_id="", default_projects=[]),
-)
+from dbt_governance.structures.governance_config import GovernanceConfig
 
 
 def load_global_config() -> GovernanceConfig:
@@ -109,7 +21,7 @@ def load_global_config() -> GovernanceConfig:
             governance_config = GovernanceConfig.from_dict(yaml.safe_load(file))
     else:
         logger.warning(f"Global configuration file not found: {constants.DEFAULT_CONFIG_PATH}")
-        governance_config = DEFAULT_CONFIG
+        governance_config = GovernanceConfig()  # Use default config values
 
     return governance_config
 
@@ -147,7 +59,7 @@ def load_config(
     return config
 
 
-def validate_config_structure(config: Dict[str, Any]) -> List[str]:
+def validate_config_structure(config: GovernanceConfig) -> List[str]:
     """Validate the structure of the configuration dictionary.
 
     Args:
@@ -157,36 +69,22 @@ def validate_config_structure(config: Dict[str, Any]) -> List[str]:
         list: A list of validation errors, empty if valid.
     """
     errors = []
+    dbt_cloud_config = config.dbt_cloud
 
     # Validate required top-level keys
-    required_keys = DEFAULT_CONFIG.keys()
-    for key in required_keys:
-        if key not in config:
-            errors.append(f"Missing required key: {key}")
-        else:
-            # Special case for global_rules_file: allow None or str
-            if key == "global_rules_file" and not (config[key] is None or isinstance(config[key], str)):
-                errors.append(f"Incorrect type for key '{key}': Expected None or str")
-            # Default type check for other keys
-            elif key != "global_rules_file" and not isinstance(config[key], type(DEFAULT_CONFIG[key])):  # type: ignore
-                errors.append(
-                    f"Incorrect type for key '{key}': Expected {type(DEFAULT_CONFIG[key]).__name__}"  # type: ignore
-                )
+    if not config.project_path and not config.project_paths:
+        errors.append("Missing required key: 'project_path' or 'project_paths'")
 
     # Validate nested dbt_cloud structure
-    if "dbt_cloud" in config:
-        dbt_cloud = config["dbt_cloud"]
-        if not isinstance(dbt_cloud, dict):
-            errors.append("'dbt_cloud' must be a dictionary.")
-        else:
-            for sub_key, expected_type in DEFAULT_CONFIG.get("dbt_cloud", {}).items():
-                if sub_key not in dbt_cloud:
-                    errors.append(f"Missing key in 'dbt_cloud': {sub_key}")
-                elif not isinstance(dbt_cloud[sub_key], type(expected_type)):
-                    errors.append(f"Incorrect type for 'dbt_cloud.{sub_key}': Expected {type(expected_type).__name__}")
+    if dbt_cloud_config:
+        if dbt_cloud_config.api_token == "":  # nosec: B105
+            errors.append("Missing required key: 'dbt_cloud.api_token'")
+        if dbt_cloud_config.organization_id == "":
+            errors.append("Missing required key: 'dbt_cloud.organization_id'")
 
-    # Validate project_paths as a list of strings
-    if not all(isinstance(path, str) for path in config.get("project_paths", [])):
-        errors.append("'project_paths' must be a list of strings.")
+        # Confirm each project path is default_projects exists as a valid Path
+        for project_path in dbt_cloud_config.default_projects:
+            if not os.path.exists(project_path):
+                errors.append(f"dbt_cloud.default_projects: Invalid project path: {project_path}")
 
     return errors
