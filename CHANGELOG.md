@@ -26,5 +26,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configured project itself for code and security governance.
 - Initial basic unit testing for project structures, not yet for rules or full coverage.
 
-[unreleased]: https://github.com/jmbrooks/dbt-governance/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/jmbrooks/dbt-governance/releases/tag/v0.1.0
+[unreleased]: https://github.com/jmbrooks/dbt-governance/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/jmbrooks/dbt-governance/releases/tag/0.1.0
