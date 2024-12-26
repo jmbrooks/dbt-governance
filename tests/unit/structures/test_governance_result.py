@@ -1,4 +1,5 @@
 import pytest
+from pydantic import ValidationError
 
 from dbt_governance.structures.governance_result import (
     GovernanceResult,
@@ -9,7 +10,8 @@ from dbt_governance.structures.validation_result import ValidationResult, Valida
 
 
 def test_governance_result_metadata() -> None:
-    """Test GovernanceResultMetadata attributes and immutability."""
+    """Test GovernanceResultMetadata attributes and validation."""
+    # Valid data
     metadata = GovernanceResultMetadata(
         generated_at="2024-12-09T12:00:00Z", result_uuid="abc123", dbt_governance_version="0.1.0"
     )
@@ -17,8 +19,9 @@ def test_governance_result_metadata() -> None:
     assert metadata.result_uuid == "abc123"
     assert metadata.dbt_governance_version == "0.1.0"
 
-    with pytest.raises(AttributeError):
-        metadata.generated_at = "2024-12-10T12:00:00Z"  # type: ignore
+    # Invalid data (e.g., missing required field)
+    with pytest.raises(ValidationError, match="Field required"):
+        GovernanceResultMetadata(result_uuid="abc123", dbt_governance_version="0.1.0")  # Missing generated_at
 
 
 def test_governance_result_summary() -> None:

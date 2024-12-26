@@ -1,5 +1,6 @@
-from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
 from dbt_governance.structures.severity import Severity
+from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
+
 
 def test_validation_status_enum() -> None:
     """Test the ValidationStatus enum for correct string and repr behavior."""

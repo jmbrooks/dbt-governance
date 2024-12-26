@@ -1,11 +1,16 @@
 import json
 import re
+import time
 from datetime import datetime, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
 import dbt_governance.utils as utils
+
+# Mock constants.PROJECT_NAME
+PROJECT_NAME = "dbt-governance"
 
 
 def test_get_utc_iso_timestamp() -> None:
@@ -35,6 +40,69 @@ def test_get_uuid() -> None:
     # Validate that the UUID matches the standard UUID format using a regex
     uuid_regex = re.compile(r"^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$", re.IGNORECASE)
     assert uuid_regex.match(uuid), f"Invalid UUID format: {uuid}"
+
+
+@patch("dbt_governance.constants.PROJECT_NAME", PROJECT_NAME)
+def test_track_runtime_simple_function(capfd: pytest.CaptureFixture) -> None:
+    """Test track_runtime with a simple function."""
+
+    @utils.track_runtime
+    def simple_function():
+        time.sleep(0.1)
+        return "Hello, World!"
+
+    # Call the function
+    result, runtime = simple_function()
+
+    # Assertions
+    assert result == "Hello, World!"
+    assert runtime >= 0.1  # Runtime should be at least 0.1 seconds
+
+    # Capture printed output
+    captured = capfd.readouterr()
+    assert f"Finished {PROJECT_NAME} evaluation" in captured.out
+
+
+@patch("dbt_governance.constants.PROJECT_NAME", PROJECT_NAME)
+def test_track_runtime_with_args(capfd: pytest.CaptureFixture) -> None:
+    """Test track_runtime with a function that takes arguments."""
+
+    @utils.track_runtime
+    def add_numbers(a, b):
+        return a + b
+
+    # Call the function
+    result, runtime = add_numbers(5, 7)
+
+    # Assertions
+    assert result == 12
+    assert runtime < 0.1  # Runtime should be negligible
+
+    # Capture printed output
+    captured = capfd.readouterr()
+    assert f"Finished {PROJECT_NAME} evaluation" in captured.out
+
+
+@patch("dbt_governance.constants.PROJECT_NAME", PROJECT_NAME)
+def test_track_runtime_with_long_function(capfd: pytest.CaptureFixture) -> None:
+    """Test track_runtime with a long-running function."""
+
+    @utils.track_runtime
+    def long_running_function():
+        time.sleep(2)
+        return "Done!"
+
+    # Call the function
+    result, runtime = long_running_function()
+
+    # Assertions
+    assert result == "Done!"
+    assert runtime >= 2.0  # Runtime should be at least 2 seconds
+
+    # Capture printed output
+    captured = capfd.readouterr()
+    assert f"Finished {PROJECT_NAME} evaluation" in captured.out
+    assert "0 minutes and 2" in captured.out
 
 
 def test_write_json_result(tmp_path: Path) -> None:
@@ -106,7 +174,7 @@ def test_write_json_result_invalid_path() -> None:
     sample_data = {"key": "value"}
     invalid_path = "/invalid_directory/results.json"  # Non-writable path
 
-    with pytest.raises(OSError):  # Expect an OSError for invalid path
+    with pytest.raises(OSError, match="No such file or directory"):  # Expect an OSError for invalid path
         utils.write_json_result(sample_data, invalid_path)
 
 
@@ -117,3 +185,4 @@ def test_write_json_result_non_serializable(tmp_path: Path) -> None:
 
     with pytest.raises(TypeError):  # Expect TypeError for non-serializable data
         utils.write_json_result(sample_data, output_file_path)
+

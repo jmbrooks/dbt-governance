@@ -1,7 +1,5 @@
 from dbt_governance.structures.severity import Severity
 
-print(str(Severity.CRITICAL))
-
 
 def test_severity_values() -> None:
     """Test that Severity Enum values are correct."""

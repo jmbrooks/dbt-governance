@@ -57,7 +57,8 @@ def test_check_command(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> 
             dbt_project_path="path/to/dbt/project",
             resource_type="model",
             unique_id="model.my_project.dim_date",
-            reason=None)
+            reason=None,
+        )
     ]
     summary = GovernanceResultSummary(
         total_evaluations=1,
