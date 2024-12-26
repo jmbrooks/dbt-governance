@@ -26,6 +26,7 @@ pytest = "^8.3"
 pytest-cov = "^6.0"
 ruff = "^0.1"
 tox = "^4.5"
+types-colorama = "^0.4.15.20240106"
 types-PyYAML = "^6.0.12.12"
 
 [tool.poetry.scripts]
