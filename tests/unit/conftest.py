@@ -21,11 +21,22 @@ def mock_manifest_data() -> Any:
 
 
 @pytest.fixture()
-def dbt_client(tmp_path: Path) -> DbtProject:
+def dbt_project(tmp_path: Path) -> DbtProject:
     """Fixture to provide a DbtProject with a temporary project path."""
     project_path = tmp_path / "dbt_project"
     project_path.mkdir(parents=True, exist_ok=True)
-    return DbtProject(project_path)
+
+    # Create a mock `dbt_project.yml` file to satisfy validation
+    dbt_project_yml_path = project_path / "dbt_project.yml"
+    dbt_project_yml_path.write_text(
+        """
+        name: test_project
+        version: 1.0.0
+        profile: default
+        """
+    )
+
+    return DbtProject(project_path=project_path)
 
 
 @pytest.fixture()
