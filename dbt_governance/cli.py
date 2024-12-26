@@ -76,11 +76,11 @@ def evaluate(project_path: str, project_paths: List[str], rules_file: str, sever
     # Aggregate results by severity
     severity_summary = {}
     for result in governance_evaluation.results:
-        severity = result.rule_severity.value.lower()
+        severity = str(result.rule_severity)
         if severity not in severity_summary:
             severity_summary[severity] = {"evaluated": 0, "passed": 0}
         severity_summary[severity]["evaluated"] += 1
-        if result.status == ValidationStatus.PASSED:
+        if result.status == ValidationStatus.PASSED.value:
             severity_summary[severity]["passed"] += 1
 
     # Compute overall pass rate
