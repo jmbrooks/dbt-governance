@@ -7,13 +7,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 # Compatible Python versions
-python = "^3.10"
+python = ">=3.9,<3.14"
 # Project dependencies
 dbt-core = "^1.6"
 jsonschema = "^4.19"
 pyyaml = "^6.0"
 colorama = "^0.4.6"
 pydantic = "^2.10.3"
+dbt-snowflake = "^1.9.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7"
@@ -52,6 +53,30 @@ warn_unused_ignores = true
 
 [tool.ruff]
 line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E", # pep8 (pycodestyle) errors
+    "F", # pep8 (pyflakes) formatting errors
+    "N", # pep8 naming convention violations
+    "W", # pep8 (pycodestyle) warnings
+    "B", # flake8-bugbear design issues
+    "C4", # flake8-comprehensions issues
+    "ISC", # flake8 implicit string concat issues
+    "Q", # flake8-quotes quote issues
+    "RSE", # flake8-raise raise exception issues
+    "T10", # flake8 debugger
+    "T20", # flake8 print usage issues
+    "YTT", # flake8-2020 sys version info issues
+    "PIE", # flake8 misc linting issues
+    "I", # isort import issues
+    "TID", # tidy import flags
+    "FLY", # flynt f-string usage issues
+    "PERF", # perflint performance issues
+    "PT", # pytest style and usage issues
+    "PD", # pandas vet issues
+    "RUF", # ruff issues
+]
 
 [tool.pytest.ini_options]
 minversion = "7.0"

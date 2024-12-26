@@ -51,3 +51,11 @@ repos:
         entry: ruff
         language: system
         types_or: [ python, pyi ]
+
+      - id: poetry-check
+        name: poetry-check
+        entry: poetry check
+        language: system
+        pass_filenames: false
+        args:
+          - "--lock"
