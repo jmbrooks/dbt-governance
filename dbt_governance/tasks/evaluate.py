@@ -131,8 +131,8 @@ def evaluate_task(
     # Summarize results
     summary = GovernanceResultSummary(
         total_evaluations=len(all_results),
-        total_passed=sum(1 for result in all_results if result.status == ValidationStatus.PASSED),
-        total_failed=sum(1 for result in all_results if result.status == ValidationStatus.FAILED),
+        total_passed=sum(1 for result in all_results if result.status == ValidationStatus.PASSED.value),
+        total_failed=sum(1 for result in all_results if result.status == ValidationStatus.FAILED.value),
     )
 
     # Metadata
