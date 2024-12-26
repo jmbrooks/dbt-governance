@@ -69,9 +69,11 @@ select = [
     "T20", # flake8 print usage issues
     "PTH", # flake8 path over os issues
     "RET", # flake8 return issues
+    "SLF", # flake8 self issues
     "YTT", # flake8-2020 sys version info issues
     "PIE", # flake8 misc linting issues
     "I", # isort import issues
+    "PGH", # pygrep-hooks issues
     "TID", # tidy import flags
     "FLY", # flynt f-string usage issues
     "PERF", # perflint performance issues

@@ -154,7 +154,7 @@ def test_write_json_result_with_string_path(tmp_path: Path) -> None:
 
 def test_write_json_result_empty_data(tmp_path: Path) -> None:
     """Test writing empty JSON data."""
-    sample_data = {}  # type: ignore
+    sample_data = {}
     output_file_path = tmp_path / "empty_results.json"
 
     written_path = utils.write_json_result(sample_data, output_file_path)
