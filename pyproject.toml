@@ -2,8 +2,40 @@
 name = "dbt-governance"
 version = "0.1.0"
 description = "A flexible governance tool for dbt projects, enabling teams to define and enforce custom rules for data quality, privacy, security, and compliance. Supports single and multi-project configurations, with integrations for local development and future compatibility with dbt Cloud. Includes features for metadata validation, test coverage checks, and rule-based governance health reporting."
-authors = ["Johnathan Brooks <19945186+jmbrooks@users.noreply.github.com>"]
+authors = ["Johnathan Brooks"]
 readme = "README.md"
+repository = "https://github.com/python-poetry/poetry"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+keywords = [
+    "dbt",
+    "governance",
+    "data",
+    "validation",
+    "testing",
+    "coverage",
+    "CI",
+    "continuous integration",
+]
+
+[tool.poetry.scripts]
+dbt-governance = "dbt_governance.cli:cli"
 
 [tool.poetry.dependencies]
 # Compatible Python versions
@@ -28,9 +60,6 @@ ruff = "^0.1"
 tox = "^4.5"
 types-colorama = "^0.4.15.20240106"
 types-PyYAML = "^6.0.12.12"
-
-[tool.poetry.scripts]
-dbt-governance = "dbt_governance.cli:cli"
 
 [build-system]
 requires = ["poetry-core"]
