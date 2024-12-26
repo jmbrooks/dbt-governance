@@ -14,6 +14,7 @@ class DbtCloudConfig(BaseModel):
         default_projects (List[str]): A list of default project names to use for dbt Cloud API interactions.
 
     """
+
     model_config = ConfigDict(strict=True, str_strip_whitespace=True)
 
     api_token: str = Field(..., description="The dbt Cloud API token.")

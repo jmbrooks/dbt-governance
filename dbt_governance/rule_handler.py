@@ -1,7 +1,7 @@
 from typing import List, Optional
 
-from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
 from dbt_governance.structures.governance_rule import GovernanceRule
+from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
 
 
 def append_evaluation_result(

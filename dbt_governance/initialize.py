@@ -3,10 +3,10 @@ from typing import Optional
 
 import yaml
 
-from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig, RuleEvaluationConfig
-from dbt_governance.structures.governance_rule import GovernanceRule
-from dbt_governance.rules.registry import RulesRegistry
 from dbt_governance.logging_config import logger
+from dbt_governance.rules.registry import RulesRegistry
+from dbt_governance.structures.governance_rule import GovernanceRule
+from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig, RuleEvaluationConfig
 
 
 def load_rules(rules_file: Optional[str], include_not_enabled: bool = False) -> GovernanceRulesConfig:

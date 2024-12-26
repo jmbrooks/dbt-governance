@@ -1,17 +1,16 @@
 from typing import List
 
 import click
-import yaml
 
 import dbt_governance.constants as constants
 import dbt_governance.utils as utils
 from dbt_governance import __version__
-from dbt_governance.initialize import load_rules
-from dbt_governance.tasks import evaluate_task, list_rules_task, validate_config_task
 from dbt_governance.config import load_config
+from dbt_governance.initialize import load_rules
 from dbt_governance.logging_config import green, logger, red, yellow
 from dbt_governance.structures.severity import Severity
 from dbt_governance.structures.validation_result import ValidationStatus
+from dbt_governance.tasks import evaluate_task, list_rules_task, validate_config_task
 
 
 @click.group(no_args_is_help=True)

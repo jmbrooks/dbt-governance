@@ -185,4 +185,3 @@ def test_write_json_result_non_serializable(tmp_path: Path) -> None:
 
     with pytest.raises(TypeError):  # Expect TypeError for non-serializable data
         utils.write_json_result(sample_data, output_file_path)
-

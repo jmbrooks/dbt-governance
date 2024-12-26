@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from dbt_governance.rule_handler import append_evaluation_result
-from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
+from dbt_governance.structures.validation_result import ValidationResult
 
 
 def has_tag(

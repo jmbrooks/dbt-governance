@@ -2,14 +2,12 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
-from typing_extensions import Annotated
-
-from pydantic import AfterValidator, BaseModel, ConfigDict, Field, PrivateAttr
 
 from dbt.cli.main import dbtRunner, dbtRunnerResult
 from dbt.contracts.graph.manifest import Manifest
 from dbt.graph.graph import Graph
-from dbt.graph.selector import NodeSelector
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field, PrivateAttr
+from typing_extensions import Annotated
 
 import dbt_governance.utils as utils
 
@@ -21,6 +19,7 @@ class DbtProject(BaseModel):
         project_path (Path): Path to the dbt project root directory.
         _manifest (Manifest): The dbt Manifest object.
     """
+
     model_config = ConfigDict(strict=True)
 
     project_path: Annotated[Union[str, Path], AfterValidator(utils.validate_dbt_path)] = Field(

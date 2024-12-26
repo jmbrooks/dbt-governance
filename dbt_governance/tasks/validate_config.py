@@ -1,4 +1,5 @@
 from typing import Tuple
+
 import yaml
 
 from dbt_governance.config import validate_config_structure
@@ -22,9 +23,7 @@ def validate_config_task(config_file: str) -> Tuple[bool, str]:
         validity_message = f"Failed to load configuration file: {err}"
 
     # Create GovernanceConfig object from yaml data
-    print(config)
     dbt_governance_config = GovernanceConfig.from_dict(config)
-    print('got here')
     errors = validate_config_structure(dbt_governance_config)
 
     if errors:
