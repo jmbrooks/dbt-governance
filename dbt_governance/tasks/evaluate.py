@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import yaml
 
@@ -45,7 +45,7 @@ def load_global_rules_config(rules_file: str) -> Dict[str, Any]:
 
 def evaluate_task(
     rules: List[GovernanceRule],
-    project_paths: List[str],
+    project_paths: List[Union[str, Path]],
     check_uuid: str,
     dbt_governance_version: str,
 ) -> GovernanceResult:
@@ -53,7 +53,7 @@ def evaluate_task(
 
     Args:
         rules (List[GovernanceRule]): List of governance rules.
-        project_paths (List[str]): List of dbt project paths.
+        project_paths (List[Union[str, Path]]): List of dbt project paths.
         check_uuid (str): UUID for the dbt-governance check run and result.
         dbt_governance_version (str): Version of the dbt-governance package (e.g. 0.6.1).
 
