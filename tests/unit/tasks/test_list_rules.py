@@ -1,8 +1,10 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
-from dbt_governance.tasks.list_rules import list_rules_task
+
 from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.severity import Severity
+from dbt_governance.tasks.list_rules import list_rules_task
 
 
 def test_list_rules_task_with_valid_config() -> None:
@@ -66,7 +68,9 @@ def test_list_rules_task_invalid_rules_file() -> None:
     mock_config.global_rules_file = None  # Simulate a missing or invalid rules file
 
     with patch("dbt_governance.tasks.list_rules.load_config", return_value=mock_config) as mock_load_config:
-        with patch("dbt_governance.tasks.list_rules.load_rules", side_effect=FileNotFoundError("mocked file not found")) as mock_load_rules:
+        with patch(
+            "dbt_governance.tasks.list_rules.load_rules", side_effect=FileNotFoundError("mocked file not found")
+        ) as mock_load_rules:
             with pytest.raises(FileNotFoundError, match="mocked file not found"):
                 list_rules_task("project_path", ["project_paths"], "rules_file")
 

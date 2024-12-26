@@ -1,7 +1,7 @@
-from dbt_governance.structures.rule_evaluation import RuleEvaluation
 from dbt_governance.structures.governance_rule import GovernanceRule
-from dbt_governance.structures.validation_result import ValidationResult
+from dbt_governance.structures.rule_evaluation import RuleEvaluation
 from dbt_governance.structures.severity import Severity
+from dbt_governance.structures.validation_result import ValidationResult
 
 
 def test_rule_evaluation_initialization() -> None:

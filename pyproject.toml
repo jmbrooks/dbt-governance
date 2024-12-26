@@ -67,6 +67,7 @@ select = [
     "RSE", # flake8-raise raise exception issues
     "T10", # flake8 debugger
     "T20", # flake8 print usage issues
+#    "RET", # flake8 return issues
     "YTT", # flake8-2020 sys version info issues
     "PIE", # flake8 misc linting issues
     "I", # isort import issues

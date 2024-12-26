@@ -21,7 +21,7 @@ class GovernanceRule(BaseModel):
     description: str = Field(..., description="A description of the rule.")
     severity: Severity = Field(..., description="The severity level of the rule.")
     enabled: Optional[bool] = Field(True, description="Whether the rule is enabled.")
-    args: Optional[Dict[str, Any]] = Field(None, description="Test-specific arguments or argument scope configuration.")
+    args: Optional[dict[str, Any]] = Field(None, description="Test-specific arguments or argument scope configuration.")
     paths: Optional[list[str]] = Field(None, description="Affected paths (e.g., folders/models).")
 
     @classmethod
@@ -38,7 +38,7 @@ class GovernanceRule(BaseModel):
         )
 
     @classmethod
-    def get_rule_by_name(cls, rule_name: str, rules_data: list[Dict[str, Any]]) -> "GovernanceRule":
+    def get_rule_by_name(cls, rule_name: str, rules_data: list[dict[str, Any]]) -> "GovernanceRule":
         """Retrieve a governance rule by its name."""
         rule_index = next((i for i, item in enumerate(rules_data) if item.get("name") == rule_name), -1)
         if rule_index == -1:

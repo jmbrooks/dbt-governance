@@ -1,11 +1,12 @@
-import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
-from dbt_governance.tasks.evaluate import evaluate_task
+from unittest.mock import patch
+
+import pytest
+
+from dbt_governance.structures.governance_result import GovernanceResult
 from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.severity import Severity
-from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
-from dbt_governance.structures.governance_result import GovernanceResult
+from dbt_governance.tasks.evaluate import evaluate_task
 
 
 @patch("dbt_governance.tasks.evaluate.DbtProject")

@@ -30,7 +30,7 @@ class PassRateAcceptanceThresholdsConfig(BaseModel):
     @property
     def has_set_any_thresholds(self) -> bool:
         """Return True if any thresholds have been set."""
-        return any([threshold is not None for threshold in self.model_dump() .values()])
+        return any(threshold is not None for threshold in self.model_dump().values())
 
 
 class RuleEvaluationConfig(BaseModel):

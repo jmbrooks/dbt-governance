@@ -1,10 +1,8 @@
-import pytest
 from dbt_governance.structures.governance_rules_config import (
+    GovernanceRulesConfig,
     PassRateAcceptanceThresholdsConfig,
     RuleEvaluationConfig,
-    GovernanceRulesConfig,
 )
-from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.severity import Severity
 
 

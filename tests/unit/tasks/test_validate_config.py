@@ -1,5 +1,5 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from dbt_governance.tasks.validate_config import validate_config_task
 
 
@@ -7,7 +7,9 @@ def test_validate_config_task_valid_file() -> None:
     """Test validate_config_task with a valid configuration file."""
     with patch("builtins.open", MagicMock(return_value=MagicMock())) as mock_open:
         with patch("yaml.safe_load", return_value={"dbt_cloud": {"api_token": "test_token"}}) as mock_safe_load:
-            with patch("dbt_governance.tasks.validate_config.validate_config_structure", return_value=[]) as mock_validate_structure:
+            with patch(
+                "dbt_governance.tasks.validate_config.validate_config_structure", return_value=[]
+            ) as mock_validate_structure:
                 is_valid, message = validate_config_task("valid_config.yml")
 
                 # Assertions
@@ -37,7 +39,7 @@ def test_validate_config_task_validation_errors() -> None:
         with patch("yaml.safe_load", return_value={"dbt_cloud": {"api_token": "test_token"}}) as mock_safe_load:
             with patch(
                 "dbt_governance.tasks.validate_config.validate_config_structure",
-                return_value=["Missing required key: 'global_rules_file'", "Invalid dbt_cloud.organization_id"]
+                return_value=["Missing required key: 'global_rules_file'", "Invalid dbt_cloud.organization_id"],
             ) as mock_validate_structure:
                 is_valid, message = validate_config_task("config_with_errors.yml")
 
@@ -65,7 +67,9 @@ def test_validate_config_task_redacted_config() -> None:
     """Test validate_config_task redacts sensitive keys in logs."""
     with patch("builtins.open", MagicMock(return_value=MagicMock())) as mock_open:
         with patch("yaml.safe_load", return_value={"dbt_cloud": {"api_token": "sensitive_token"}}) as mock_safe_load:
-            with patch("dbt_governance.tasks.validate_config.validate_config_structure", return_value=[]) as mock_validate_structure:
+            with patch(
+                "dbt_governance.tasks.validate_config.validate_config_structure", return_value=[]
+            ) as mock_validate_structure:
                 with patch("dbt_governance.tasks.validate_config.logger") as mock_logger:
                     is_valid, message = validate_config_task("config_with_sensitive_data.yml")
 
