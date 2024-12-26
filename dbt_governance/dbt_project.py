@@ -131,8 +131,10 @@ class DbtProject(BaseModel):
             # use 'parse' command to load a Manifest
             res: dbtRunnerResult = dbtRunner().invoke(["parse"], project_dir=self.project_path)
             manifest: Manifest = res.result
-            logger.debug(f"Finished forced re-parsing of the project, with updated manifest generation time: "
-                         f"{manifest.metadata.generated_at}")
+            logger.debug(
+                f"Finished forced re-parsing of the project, with updated manifest generation time: "
+                f"{manifest.metadata.generated_at}"
+            )
 
         # Create a Graph from the manifest
         graph = Graph(self.manifest)
