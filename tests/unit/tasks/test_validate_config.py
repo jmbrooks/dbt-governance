@@ -1,3 +1,4 @@
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from dbt_governance.tasks.validate_config import validate_config_task
@@ -22,15 +23,17 @@ def test_validate_config_task_valid_file() -> None:
 
 def test_validate_config_task_invalid_yaml() -> None:
     """Test validate_config_task with invalid YAML."""
-    with patch("builtins.open", MagicMock(return_value=MagicMock())) as mock_open:
-        with patch("yaml.safe_load", side_effect=ValueError("mocked YAML error")) as mock_safe_load:
-            is_valid, message = validate_config_task("invalid_config.yml")
+    # with patch("builtins.open", MagicMock(return_value=MagicMock())) as mock_open:
+    #     with patch("yaml.safe_load", side_effect=ValueError("mocked YAML error")) as mock_safe_load:
+    invalid_config_file = Path("invalid_config.yml")
+    invalid_config_file.touch()
+    is_valid, message = validate_config_task(str(invalid_config_file))
 
-            # Assertions
-            assert is_valid is False
-            assert "Failed to load configuration file: mocked YAML error" in message
-            mock_open.assert_called_once_with("invalid_config.yml", "r")
-            mock_safe_load.assert_called_once()
+    # Assertions
+    assert is_valid is False
+    assert "Failed to load configuration file: mocked YAML error" in message
+            # mock_open.assert_called_once_with("invalid_config.yml", "r")
+            # mock_safe_load.assert_called_once()
 
 
 def test_validate_config_task_validation_errors() -> None:

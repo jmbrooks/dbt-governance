@@ -1,11 +1,24 @@
+import json
+from pathlib import Path
+
 from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.rule_evaluation import RuleEvaluation
 from dbt_governance.structures.severity import Severity
 from dbt_governance.structures.validation_result import ValidationResult
 
 
-def test_rule_evaluation_initialization() -> None:
+def test_rule_evaluation_initialization(mock_manifest_data: dict, tmp_path: Path) -> None:
     """Test the initialization of the RuleEvaluation class."""
+    project_path = tmp_path / "dbt_project"
+    dbt_project_file = project_path / "dbt_project.yml"
+    manifest_path = project_path / "target" / "manifest.json"
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    dbt_project_file.touch()
+
+    # Write mock manifest data to the file
+    with Path.open(manifest_path, "w") as f:
+        json.dump(mock_manifest_data, f)
+
     rule = GovernanceRule(
         name="Primary Key Test",
         type="data",
@@ -20,14 +33,14 @@ def test_rule_evaluation_initialization() -> None:
         rule_name="Primary Key Test",
         status="passed",
         reason=None,
-        dbt_project_path="/path/to/dbt_project",
+        dbt_project_path=project_path,
         resource_type="model",
         unique_id="model.sample_project.my_model",
     )
 
     rule_evaluation = RuleEvaluation(
         rule=rule,
-        dbt_project_path="/path/to/dbt_project",
+        dbt_project_path=project_path,
         dbt_project_version="1.8.0",
         dbt_project_manifest_generated_at="2024-01-01T00:00:00Z",
         dbt_selection_syntax="staging+",
@@ -37,45 +50,10 @@ def test_rule_evaluation_initialization() -> None:
 
     # Assertions
     assert rule_evaluation.rule.name == "Primary Key Test"
-    assert rule_evaluation.dbt_project_path == "/path/to/dbt_project"
+    assert rule_evaluation.dbt_project_path == project_path
     assert rule_evaluation.dbt_project_version == "1.8.0"
     assert rule_evaluation.dbt_project_manifest_generated_at == "2024-01-01T00:00:00Z"
     assert rule_evaluation.dbt_selection_syntax == "staging+"
     assert rule_evaluation.evaluate_dbt_nodes == ["model.sample_project.my_model"]
     assert len(rule_evaluation.validation_results) == 1
     assert rule_evaluation.validation_results[0].rule_name == "Primary Key Test"
-
-
-def test_rule_evaluation_to_dict() -> None:
-    """Test the to_dict method of the RuleEvaluation class."""
-    rule = GovernanceRule(
-        name="Owner Metadata",
-        type="metadata",
-        description="Ensure all models have an owner defined.",
-        severity=Severity.MEDIUM,
-        enabled=True,
-        args=None,
-        paths=None,
-    )
-
-    rule_evaluation = RuleEvaluation(
-        rule=rule,
-        dbt_project_path="/path/to/dbt_project",
-        dbt_project_version="1.9.0",
-        dbt_project_manifest_generated_at="2024-01-02T00:00:00Z",
-        dbt_selection_syntax=None,
-        evaluate_dbt_nodes=[],
-        validation_results=[],
-    )
-
-    result_dict = rule_evaluation.to_dict()
-
-    # Assertions
-    assert isinstance(result_dict, dict)
-    assert result_dict["rule"]["name"] == "Owner Metadata"
-    assert result_dict["dbt_project_path"] == "/path/to/dbt_project"
-    assert result_dict["dbt_project_version"] == "1.9.0"
-    assert result_dict["dbt_project_manifest_generated_at"] == "2024-01-02T00:00:00Z"
-    assert result_dict["dbt_selection_syntax"] is None
-    assert result_dict["evaluate_dbt_nodes"] == []
-    assert result_dict["validation_results"] == []

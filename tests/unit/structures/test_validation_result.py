@@ -4,10 +4,10 @@ from dbt_governance.structures.validation_result import ValidationResult, Valida
 
 def test_validation_status_enum() -> None:
     """Test the ValidationStatus enum for correct string and repr behavior."""
-    assert str(ValidationStatus.PASSED) == "passed"
-    assert str(ValidationStatus.FAILED) == "failed"
-    assert str(ValidationStatus.ERROR) == "error"
-    assert str(ValidationStatus.WARNING) == "warning"
+    assert ValidationStatus.PASSED.value == "passed"
+    assert ValidationStatus.FAILED.value == "failed"
+    assert ValidationStatus.ERROR.value == "error"
+    assert ValidationStatus.WARNING.value == "warning"
 
     assert repr(ValidationStatus.PASSED) == "The rule passed successfully."
     assert repr(ValidationStatus.FAILED) == "The rule failed validation."

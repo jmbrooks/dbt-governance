@@ -8,7 +8,15 @@ from dbt_governance.structures.governance_config import GovernanceConfig
 
 
 def validate_config_task(config_file: str) -> tuple[bool, str]:
-    """"""
+    """CLI task to validate the dbt-governance configuration file at the given path.
+
+    Args:
+        config_file (str): The path to the configuration file to validate.
+
+    Returns:
+        tuple[bool, str]: A tuple containing a boolean indicating if the configuration is valid and a message
+        describing the result of the validation.
+    """
     is_valid_config = True
     validity_message = ""
 

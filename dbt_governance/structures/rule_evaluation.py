@@ -1,8 +1,9 @@
 from pathlib import Path
-from typing import Optional
+from typing import Annotated, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
+import dbt_governance.utils as utils
 from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.validation_result import ValidationResult
 
@@ -13,7 +14,9 @@ class RuleEvaluation(BaseModel):
     model_config = ConfigDict(strict=True)
 
     rule: GovernanceRule = Field(..., description="The governance rule being evaluated.")
-    dbt_project_path: Path = Field(..., description="The path to the dbt project directory.")
+    dbt_project_path: Annotated[Union[str, Path], AfterValidator(utils.validate_dbt_path)] = Field(
+        ..., description="Path to the dbt project root directory."
+    )
     dbt_project_version: str = Field(..., description="The dbt version for the project being evaluated.")
     dbt_project_manifest_generated_at: str = Field(
         ..., description="The timestamp when the dbt project manifest was generated."
@@ -25,7 +28,3 @@ class RuleEvaluation(BaseModel):
         [], description="The dbt nodes that will be / were evaluated by the rule this run."
     )
     validation_results: list[ValidationResult] = Field([], description="The results of the rule validation runs.")
-
-    def to_dict(self) -> dict:
-        """Convert the RuleEvaluation to a dictionary for JSON serialization."""
-        return self.model_dump()
