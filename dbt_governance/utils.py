@@ -1,25 +1,25 @@
 import json
-import time
 from datetime import datetime, timezone
-from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 from uuid import uuid4
-
-import dbt_governance.constants as constants
 
 
 def assemble_dbt_selection_clause(select_clause: Optional[str] = None, exclude_clause: Optional[str] = None) -> str:
     """Assemble a dbt selection clause from select and exclude clauses."""
     selection_clause = ""
+    sorted_select_clause = ""
+    sorted_exclude_clause = ""
     if select_clause or exclude_clause:
-        selections = select_clause.split()
-        sorted_selections = sorted(selections)
-        sorted_select_clause = " ".join(sorted_selections)
+        if select_clause:
+            selections = select_clause.split()
+            sorted_selections = sorted(selections)
+            sorted_select_clause = " ".join(sorted_selections)
 
-        exclusions = exclude_clause.split()
-        sorted_exclusions = sorted(exclusions)
-        sorted_exclude_clause = " ".join(sorted_exclusions)
+        if exclude_clause:
+            exclusions = exclude_clause.split()
+            sorted_exclusions = sorted(exclusions)
+            sorted_exclude_clause = " ".join(sorted_exclusions)
 
         if sorted_select_clause:
             selection_clause += f" --select {sorted_select_clause}"
