@@ -38,33 +38,6 @@ def get_uuid() -> str:
     return str(uuid4())
 
 
-def track_runtime(func: Callable) -> Callable[[tuple[Any, ...], dict[str, Any]], tuple[Any, float]]:
-    """Decorator to measure the runtime of a function and print it."""
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-
-        # Calculate runtime in seconds
-        runtime_seconds = end_time - start_time
-
-        # Format the runtime for stdout
-        minutes, seconds = divmod(runtime_seconds, 60)
-        runtime_message = (
-            f"Finished {constants.PROJECT_NAME} evaluation in {int(minutes)} minutes and {seconds:.2f} seconds "
-            f"({runtime_seconds:.2f}s)."
-        )
-        # logger.info(f"\nFinished {constants.PROJECT_NAME} evaluation in {int(minutes)} minutes and {seconds:.2f} "
-        #             f"seconds ({runtime_seconds:.2f}s).")
-
-        # Return both the result and runtime
-        return result, runtime_seconds, runtime_message
-
-    return wrapper
-
-
 def validate_path(path: Union[str, Path]) -> Path:
     """Validate a path string or Path object, returning a Path object."""
     if not Path(path) or not Path(path).exists():
