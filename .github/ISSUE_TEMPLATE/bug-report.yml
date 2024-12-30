@@ -9,7 +9,7 @@ body:
         Thank you for filling out this bug report!
   - type: checkboxes
     attributes:
-      label: Is this a new bug in dbt-core?
+      label: Is this a new bug in dbt-governance?
       description: >
         In other words, is this an error, flaw, failure or fault in the dbt-governance package?
 
@@ -63,7 +63,7 @@ body:
       value: |
         - OS:
         - Python:
-        - dbt:
+        - dbt-core:
         - dbt-governance:
       render: markdown
     validations:
