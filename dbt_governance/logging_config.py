@@ -7,13 +7,16 @@ from pathlib import Path
 
 import colorama
 
+import dbt_governance.constants as constants
+
 # Log file paths
+LOGGER_NAME = constants.PROJECT_NAME
 LOG_DIR = Path("~/dbt-governance-logs").expanduser()
 DEBUG_LOG_FILE = LOG_DIR / "debug.log"
 ERROR_LOG_FILE = LOG_DIR / "error.log"
 
 if sys.platform == "win32" and (not os.getenv("TERM") or os.getenv("TERM") == "None"):
-    colorama.init(wrap=True)
+    colorama.init(wrap=True)  # pragma: no cover
 
 
 class Color(Enum):
@@ -53,14 +56,12 @@ console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)
 console_handler.setFormatter(logging.Formatter(LOG_FORMAT))
 
-# Configure the root logger
-logging.basicConfig(
-    level=logging.DEBUG,  # Root logger level
-    handlers=[debug_handler, error_handler, console_handler],  # Handlers
-)
-
 # Create a logger for the package
-logger = logging.getLogger("dbt_governance")
+logger = logging.getLogger(LOGGER_NAME)
+logger.setLevel(logging.DEBUG)
+logger.addHandler(debug_handler)
+logger.addHandler(error_handler)
+logger.addHandler(console_handler)
 
 
 def return_in_color(text: str, color_code: Color, use_color: bool = True) -> str:

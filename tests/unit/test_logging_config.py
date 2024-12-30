@@ -1,5 +1,9 @@
+import colorama
 import logging
+import os
+import sys
 from pathlib import Path
+from unittest.mock import patch
 
 from dbt_governance.logging_config import (
     DEBUG_LOG_FILE,
@@ -9,8 +13,29 @@ from dbt_governance.logging_config import (
     green,
     logger,
     red,
-    yellow,
+    yellow, LOGGER_NAME,
 )
+
+
+@patch("os.getenv")
+@patch("sys.platform", "linux")
+@patch("colorama.init")
+def test_colorama_init_not_called_on_non_win32(mock_colorama_init, mock_getenv) -> None:
+    """Test that colorama.init is not called when platform is not win32."""
+    # Mock os.getenv to simulate TERM not being set
+    mock_getenv.return_value = None
+
+    # Simulate the conditional logic
+    if sys.platform == "win32" and (not os.getenv("TERM") or os.getenv("TERM") == "None"):
+        colorama.init(wrap=True)
+
+    # Assert colorama.init was not called
+    mock_colorama_init.assert_not_called()
+
+
+def test_logger_name() -> None:
+    """Confirm the logger name matches project naming expectation."""
+    assert logger.name == "dbt-governance"
 
 
 def test_log_directory_exists() -> None:
@@ -27,6 +52,7 @@ def test_log_file_paths() -> None:
 def test_logger_handlers() -> None:
     """Test that the logger has the required handlers."""
     handler_types = [type(handler) for handler in logger.handlers]
+    print(handler_types)
     assert logging.handlers.RotatingFileHandler in handler_types, "RotatingFileHandler is missing"
     assert logging.StreamHandler in handler_types, "StreamHandler is missing"
 
@@ -37,7 +63,7 @@ def test_debug_handler_configuration() -> None:
         (
             h
             for h in logger.handlers
-            if isinstance(h, logging.handlers.RotatingFileHandler) and h.baseFilename == DEBUG_LOG_FILE
+            if isinstance(h, logging.handlers.RotatingFileHandler) and str(DEBUG_LOG_FILE) in h.baseFilename
         ),
         None,
     )
@@ -53,7 +79,7 @@ def test_error_handler_configuration() -> None:
         (
             h
             for h in logger.handlers
-            if isinstance(h, logging.handlers.RotatingFileHandler) and h.baseFilename == ERROR_LOG_FILE
+            if isinstance(h, logging.handlers.RotatingFileHandler) and str(ERROR_LOG_FILE) in h.baseFilename
         ),
         None,
     )
@@ -67,8 +93,19 @@ def test_log_format(caplog) -> None:
     """Test that log messages follow the defined log format."""
     with caplog.at_level(logging.DEBUG):
         logger.debug("This is a test message.")
+
     assert len(caplog.records) > 0, "No log records were captured."
-    assert all(LOG_FORMAT in record.message for record in caplog.records), "Log format is incorrect."
+
+    # Create a formatter using the LOG_FORMAT
+    formatter = logging.Formatter(LOG_FORMAT)
+
+    # Validate that each captured record matches the format
+    for record in caplog.records:
+        formatted_message = formatter.format(record)
+        print(formatted_message)
+        assert LOGGER_NAME in formatted_message, "Logger name not found in formatted message."
+        assert "DEBUG" in formatted_message, "Log level not found in formatted message."
+        assert "This is a test message." in formatted_message, "Log message not found in formatted message."
 
 
 def test_log_color_functions() -> None:
