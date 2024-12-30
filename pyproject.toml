@@ -50,8 +50,6 @@ dbt-snowflake = "^1.9"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7"
-black = "^23.9"
-isort = "^5.13"
 mypy = "^1.8"
 pre-commit = "^4.0"
 pytest = "^8.3"
@@ -67,11 +65,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.bandit]
 exclude_dirs = ["data_build/", "logs/", "tests/", "env/", "venv/", "*venv/", ".env", ".env.*", ".git", ".tox/"]
-
-[tool.black]
-line-length = 120
-target-version = ['py36', 'py37', 'py38']
-include = '\.pyi?$'
 
 [tool.mypy]
 mypy_path = "./dbt_governance:./tests"
