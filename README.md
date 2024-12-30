@@ -2,7 +2,6 @@
 
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A flexible governance tool for [dbt](https://www.getdbt.com/) projects, enabling teams to define and enforce custom
 rules for data quality, privacy, security, and compliance.
@@ -13,6 +12,19 @@ for local development and planned compatibility with dbt Cloud.
 Includes features for metadata validation, test coverage checks, and rule-based governance health reporting.
 
 ## Basic Usage
+
+In short, if your team has set any rules for your dbt project that should be enforced, dbt-governance may be valuable
+for you. Some common examples that help teams evaluate project governance:
+
+1. Check if all dbt models have a valid `maturity` meta property.
+2. Ensure all fact and dimension tables have at least one `recency` freshness test applied.
+3. Ensure all models in selected folders folder have a a test called `primary_key` applied on at least one column.
+4. Ensure all columns with property `contains_phi` also have property: `retention_policy`.
+5. Confirm if all dbt models that begin with `fct_` have the tag `fact` applied. 
+6. Ensure all dbt models and sources have an `owner` property assigned.
+
+dbt-governance has a series of such built-in rules, but is also extensible to allow for the construction of
+custom rules - see the [Configure Rules](#configure-rules) section below for information on setting these up!
 
 ### Initial Setup
 
