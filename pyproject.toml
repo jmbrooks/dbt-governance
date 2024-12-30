@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "dbt-governance"
 version = "0.1.0"
-description = "A flexible governance tool for dbt projects, enabling teams to define and enforce custom rules for data quality, privacy, security, and compliance. Supports single and multi-project configurations, with integrations for local development and future compatibility with dbt Cloud. Includes features for metadata validation, test coverage checks, and rule-based governance health reporting."
+description = "A flexible governance tool for dbt projects, enabling teams to define and enforce custom rules for data quality, privacy, security, and compliance."
 authors = ["Johnathan Brooks"]
+license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/python-poetry/poetry"
 classifiers = [
