@@ -1,0 +1,40 @@
+# Workflow Configuration
+#
+# This workflow runs on every PR and:
+# - Runs all project configured checks and tests via tox
+# - Including bandit security checks, unit tests, linting and formatting checks
+
+name: pull-requests
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  setup-and-test:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.10-slim-buster
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        timeout-minutes: 1
+
+      - name: Setup project environment
+        run: |-
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install poetry
+            poetry install --with dev
+        timeout-minutes: 5
+
+      - name: Run tests via tox
+        run: |-
+          . venv/bin/activate
+          tox
+        timeout-minutes: 5
