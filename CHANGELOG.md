@@ -9,9 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Project pull request (PR) template
+- Basic usage example use cases to README
+- Workflow for PRs to run tests via tox
+- Bug report and feature request issue templates
+- dependabot configuration for security and dependency alerts
+
 ### Changed
 
+- Debug logging for rule evaluations to handle corner case
+
 ### Removed
+
+- Black, isort and flake8 from the project config file and dev dependencies
 
 ## [0.1.0] - 2024-12-26
 
