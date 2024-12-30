@@ -1,0 +1,52 @@
+name: Feature
+description: Propose a feature enhancement or extension to dbt-governance
+title: "[Feature] <title>"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: checkboxes
+    attributes:
+      label: Please confirm you've reviewed project guidelines and existing issues.
+      description: >
+        We want to make sure that features are distinct and discoverable,
+        so that other members of the community can find them and offer their thoughts.
+      options:
+        - label: I have searched the existing issues, and I could not find an existing issue for this feature
+          required: true
+  - type: textarea
+    attributes:
+      label: Describe the feature
+      description: A clear and concise description of project enhancement you'd like to see.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe alternatives you've considered
+      description: |
+        A clear and concise description of any alternative solutions or features you've considered.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Impact Potential / Value Add
+      description: |
+        What kind of use case will this feature be useful for, and how will these be valuable for the package?
+        Please be specific and provide examples to help us prioritize!
+    validations:
+      required: false
+  - type: input
+    attributes:
+      label: Are you interested in contributing?
+      description: Let us know if you want to dive in on the feature, and how we can help!
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Anything else?
+      description: |
+        Anything else that will give us more context about the feature you are suggesting!
+    validations:
+      required: false
