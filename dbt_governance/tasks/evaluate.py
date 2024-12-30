@@ -125,7 +125,7 @@ def evaluate_task(
                 )
 
             all_results.extend(rule_evaluation.validation_results)
-            logger.debug(f"Rule '{rule.name}' evaluated with status: {all_results[-1].status}")
+            logger.debug(f"Rule '{rule.name}' evaluation completed")
 
     # Summarize results
     summary = GovernanceResultSummary(
