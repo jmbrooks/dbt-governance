@@ -13,7 +13,7 @@ def test_constants() -> None:
 
 def test_path_expansion() -> None:
     """Test that paths are expanded correctly."""
-    home_dir = Path(Path.expanduser("~"))
+    home_dir = Path.expanduser(Path("~"))
 
     # Check expanded paths
     assert constants.DEFAULT_CONFIG_PATH == home_dir / ".dbt-governance/config.yml"
