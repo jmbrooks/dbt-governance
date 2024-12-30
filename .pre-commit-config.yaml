@@ -34,18 +34,6 @@ repos:
         types_or: [ python, pyi ]
         args: [ --fix ]
 
-      - id: black
-        name: black Python code formatting
-        entry: black
-        language: system
-        types_or: [ python, pyi ]
-
-      - id: isort
-        name: isort Python import sorting
-        entry: isort
-        language: system
-        types_or: [ python, pyi ]
-
       - id: ruff-format
         name: Ruff Python code formatting
         entry: ruff
