@@ -32,8 +32,8 @@ def test_validate_config_task_invalid_yaml() -> None:
     # Assertions
     assert is_valid is False
     assert "Failed to load configuration file: mocked YAML error" in message
-            # mock_open.assert_called_once_with("invalid_config.yml", "r")
-            # mock_safe_load.assert_called_once()
+    # mock_open.assert_called_once_with("invalid_config.yml", "r")
+    # mock_safe_load.assert_called_once()
 
 
 def test_validate_config_task_validation_errors() -> None:

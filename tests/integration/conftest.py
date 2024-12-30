@@ -1,8 +1,9 @@
-import pytest
 from pathlib import Path
 
+import pytest
 
-@pytest.fixture
+
+@pytest.fixture()
 def mock_dbt_project(tmp_path: Path) -> Path:
     """Set up a temporary dbt project with necessary files."""
     project_path = tmp_path / "dbt_project"
@@ -25,7 +26,7 @@ def mock_dbt_project(tmp_path: Path) -> Path:
     return project_path
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_rules_file(tmp_path: Path) -> Path:
     """Set up a temporary rules file."""
     rules_file = tmp_path / "rules.yml"

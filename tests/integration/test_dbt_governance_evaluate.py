@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from click.testing import CliRunner
 
 from dbt_governance.cli import cli
@@ -12,8 +13,10 @@ def test_dbt_governance_evaluate_integration(mock_dbt_project: Path, mock_rules_
         cli,
         [
             "evaluate",
-            "--project-path", str(mock_dbt_project),
-            "--rules-file", str(mock_rules_file),
+            "--project-path",
+            str(mock_dbt_project),
+            "--rules-file",
+            str(mock_rules_file),
         ],
     )
 
