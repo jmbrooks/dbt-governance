@@ -13,7 +13,7 @@ from dbt_governance.tasks import evaluate_task, list_rules_task, validate_config
 
 @click.group(no_args_is_help=True)
 @click.version_option(__version__, "--version", "-V", prog_name=constants.PROJECT_NAME)
-def cli() -> None:
+def cli() -> click.BaseCommand:
     """dbt Governance Tool: Manage and enforce governance rules for dbt projects."""
 
 
