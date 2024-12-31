@@ -3,6 +3,7 @@ import click
 import dbt_governance.constants as constants
 import dbt_governance.utils as utils
 from dbt_governance import __version__
+from dbt_governance.rules.registry import register_rule
 from dbt_governance.structures.governance_config import GovernanceConfig
 from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig
 from dbt_governance.logging_config import green, logger, red, yellow
@@ -59,6 +60,10 @@ def evaluate(project_path: str, project_paths: list[str], rules_file: str, sever
     if severity:
         logger.info(f"Limiting severity to {', '.join(severity)}")
         rules = [rule for rule in rules if str(rule.severity) in severity]
+
+    # Register all selected and enabled rules
+    for rule in rules:
+        register_rule(rule=rule)
 
     # Get scope of dbt projects to evaluate
     project_paths = config.get_project_paths()

@@ -1,4 +1,4 @@
-from typing import ClassVar
+from typing import ClassVar, Optional
 
 from dbt_governance.logging_config import logger
 from dbt_governance.structures.governance_rule import GovernanceRule
@@ -103,6 +103,25 @@ class RulesRegistry:
 #     )
 # )
 
-# print(RulesRegistry.all_rules)
-# print(RulesRegistry.get_rule("Not Null Test"))
-# print(RulesRegistry.get_distinct_rule_selection_clauses())
+
+def register_rule(type: str = None, severity=None, description: str = None, name: str = None, enabled: bool = True, rule: Optional[GovernanceRule] = None, **kwargs) -> callable:
+    """Decorator to register a governance rule with RulesRegistry."""
+    def decorator(func: callable) -> callable:
+        # Create and register the rule
+        if rule:
+            governance_rule = GovernanceRule()
+        else:
+            governance_rule = GovernanceRule(
+                name=name or func.__name__,
+                type=type,
+                severity=severity,
+                description=description,
+                enabled=enabled,
+                args=kwargs.get("args", None),
+                paths=kwargs.get("paths", None),
+            )
+        RulesRegistry.register_rule(governance_rule)
+
+        # Return the original function
+        return func
+    return decorator
