@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import yaml
 
@@ -103,55 +103,58 @@ class GovernanceConfig(BaseModel):
         return project_path_lists
 
     @classmethod
-    def load_global_config(cls) -> "GovernanceConfig":
-        """Load the global configuration from the default config file path.
+    def load_config(
+        cls,
+        project_path: Optional[Union[str, Path]] = None,
+        project_paths: Optional[Union[list[str], list[Path]]] = None,
+        rules_file: Optional[str] = None,
+    ) -> "GovernanceConfig":
+        """Merge configurations from global config, environment variables, and CLI options.
+
+        Args:
+            project_path (Optional[Union[str, Path]]): Path to a single dbt project.
+            project_paths (Optional[Union[list[str], list[Path]]]): List of dbt project paths.
+            rules_file (Optional[str]): Path to a custom rules file.
 
         Returns:
-            dict: The global Governance configuration loaded from the file.
+            The GovernanceConfig result after considering all config source options.
         """
+        # First, load any configs from the global config file, if set
         logger.debug(f"Loading global configuration from: {constants.DEFAULT_CONFIG_PATH}")
+        governance_config = GovernanceConfig()
 
         if Path.exists(constants.DEFAULT_CONFIG_PATH):
             with Path.open(constants.DEFAULT_CONFIG_PATH, mode="r") as file:
                 governance_config = GovernanceConfig.from_dict(yaml.safe_load(file))
         else:
             logger.warning(f"Global configuration file not found: {constants.DEFAULT_CONFIG_PATH}")
-            governance_config = GovernanceConfig()  # Use default config values
 
-        return governance_config
-
-    @classmethod
-    def load_config(
-        cls, project_path: Optional[Path] = None, project_paths: Optional[list[Path]] = None, rules_file: Optional[str] = None
-    ) -> "GovernanceConfig":
-        """Merge configurations from global config, environment variables, and CLI options.
-
-        Args:
-            project_path (Optional[Path]): Path to a single dbt project.
-            project_paths (Optional[list[Path]]): List of dbt project paths.
-            rules_file (Optional[str]): Path to a custom rules file.
-
-        Returns:
-            The GovernanceConfig result after considering all config source options.
-        """
-        config = self.load_global_config()
-
-        # Override with environment variables
+        # Override with environment variables, if specified
         if os.getenv("DBT_PROJECT_PATHS"):
             env_project_paths = os.getenv("DBT_PROJECT_PATHS", "").split(",")
-            config.project_paths = env_project_paths
-        config.global_rules_file = os.getenv("DBT_GLOBAL_RULES_FILE", config.global_rules_file)
-        config.dbt_cloud.api_token = os.getenv("DBT_CLOUD_API_TOKEN", config.dbt_cloud.api_token)
+            governance_config.project_paths = env_project_paths
+        if os.getenv("DBT_GLOBAL_RULES_FILE"):
+            governance_config.global_rules_file = os.getenv("DBT_GLOBAL_RULES_FILE")
+        if os.getenv("DBT_CLOUD_API_TOKEN"):
+            governance_config.dbt_cloud.api_token = os.getenv(
+                "DBT_CLOUD_API_TOKEN", governance_config.dbt_cloud.api_token
+            )
 
-        # Override with CLI options
+        # Finally, override with CLI options, if specified
         if project_path:
-            config.project_path = project_path
+            governance_config.project_path = project_path
         if project_paths:
-            config.project_paths = list(project_paths)
+            governance_config.project_paths = list(Path(project_path) for project_path in project_paths)
         if rules_file:
-            config.global_rules_file = rules_file
+            governance_config.global_rules_file = rules_file
 
-        return config
+        return cls(
+            project_path=governance_config.project_path,
+            project_paths=governance_config.project_paths,
+            output_path=governance_config.output_path,
+            global_rules_file=governance_config.global_rules_file,
+            dbt_cloud=governance_config.dbt_cloud,
+        )
 
     def validate_config_structure(self) -> list[str]:
         """Validate the structure of the configuration dictionary.

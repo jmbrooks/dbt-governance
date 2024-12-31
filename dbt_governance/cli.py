@@ -3,7 +3,7 @@ import click
 import dbt_governance.constants as constants
 import dbt_governance.utils as utils
 from dbt_governance import __version__
-from dbt_governance.config import load_config
+from dbt_governance.structures.governance_config import GovernanceConfig
 from dbt_governance.initialize import load_rules
 from dbt_governance.logging_config import green, logger, red, yellow
 from dbt_governance.structures.severity import Severity
@@ -43,7 +43,7 @@ def cli() -> click.BaseCommand:
 )
 def evaluate(project_path: str, project_paths: list[str], rules_file: str, severity: str) -> None:
     """Run governance checks on the specified dbt project(s)."""
-    config = load_config(project_path, project_paths, rules_file)
+    config = GovernanceConfig.load_config(project_path, project_paths, rules_file)
     output_file_path = config.output_path
     check_uuid = utils.get_uuid()
 
