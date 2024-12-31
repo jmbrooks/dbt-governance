@@ -24,7 +24,16 @@ class RuleEvaluation(BaseModel):
     dbt_selection_syntax: Optional[str] = Field(
         None, description="The dbt selection syntax used to get dbt nodes to evaluate."
     )
-    evaluate_dbt_nodes: list[str] = Field(
-        [], description="The dbt nodes that will be / were evaluated by the rule this run."
+    evaluate_dbt_nodes: Optional[list[str]] = Field(
+        None, description="The dbt nodes that will be / were evaluated by the rule this run."
     )
-    validation_results: list[ValidationResult] = Field([], description="The results of the rule validation runs.")
+    validation_results: Optional[list[ValidationResult]] = Field(
+        None, description="The results of the rule validation runs."
+    )
+
+    def __post_init__(self):
+        """Post initialization steps for rule evaluation instance."""
+        if self.evaluate_dbt_nodes is None:
+            self.evaluate_dbt_nodes = []
+        if self.validation_results is None:
+            self.validation_results = []

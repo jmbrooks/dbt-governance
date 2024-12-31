@@ -34,7 +34,7 @@ def load_global_rules_config(rules_file: Path) -> dict[str, Any]:
         return {}
 
     try:
-        with Path.open(rules_file, "r") as f:
+        with Path.open(rules_file, mode="r") as f:
             data = yaml.safe_load(f)
         return data.get("global_config", {})
     except Exception as e:

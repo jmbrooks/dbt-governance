@@ -190,7 +190,7 @@ def validate_config(config_file: str) -> None:
     click.echo(valid_config_message)
 
     # try:
-    #     with open(config_file, "r") as f:
+    #     with open(config_file, mode="r") as f:
     #         config = yaml.safe_load(f)
     # except yaml.YAMLError as e:
     #     click.echo(f"YAML Parsing Error: {e}", err=True)

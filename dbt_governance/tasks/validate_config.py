@@ -21,7 +21,7 @@ def validate_config_task(config_file: str) -> tuple[bool, str]:
     validity_message = ""
 
     try:
-        with Path.open(Path(config_file), "r") as f:
+        with Path.open(Path(config_file), mode="r") as f:
             config = yaml.safe_load(f)
     except yaml.YAMLError as err:
         is_valid_config = False

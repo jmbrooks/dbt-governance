@@ -56,6 +56,6 @@ def validate_dbt_path(path: Union[str, Path]) -> Path:
 def write_json_result(results_data: dict[str, Any], output_file_path: Union[str, Path]) -> Path:
     """Write data to JSON file with consistent formatting, and return the successfully-written-to output path."""
     output_file_path = Path(output_file_path)
-    with output_file_path.open("w") as output_file:
+    with output_file_path.open(mode="w") as output_file:
         json.dump(results_data, output_file, indent=4)
     return Path(output_file_path)

@@ -1,9 +1,13 @@
+import os
 from pathlib import Path
 from typing import Any, Optional
+
+import yaml
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from dbt_governance import constants
+from dbt_governance.logging_config import logger
 
 
 class DbtCloudConfig(BaseModel):
@@ -97,3 +101,83 @@ class GovernanceConfig(BaseModel):
             raise ValueError("No project paths found in configuration.")
 
         return project_path_lists
+
+    @classmethod
+    def load_global_config(cls) -> "GovernanceConfig":
+        """Load the global configuration from the default config file path.
+
+        Returns:
+            dict: The global Governance configuration loaded from the file.
+        """
+        logger.debug(f"Loading global configuration from: {constants.DEFAULT_CONFIG_PATH}")
+
+        if Path.exists(constants.DEFAULT_CONFIG_PATH):
+            with Path.open(constants.DEFAULT_CONFIG_PATH, mode="r") as file:
+                governance_config = GovernanceConfig.from_dict(yaml.safe_load(file))
+        else:
+            logger.warning(f"Global configuration file not found: {constants.DEFAULT_CONFIG_PATH}")
+            governance_config = GovernanceConfig()  # Use default config values
+
+        return governance_config
+
+    @classmethod
+    def load_config(
+        cls, project_path: Optional[Path] = None, project_paths: Optional[list[Path]] = None, rules_file: Optional[str] = None
+    ) -> "GovernanceConfig":
+        """Merge configurations from global config, environment variables, and CLI options.
+
+        Args:
+            project_path (Optional[Path]): Path to a single dbt project.
+            project_paths (Optional[list[Path]]): List of dbt project paths.
+            rules_file (Optional[str]): Path to a custom rules file.
+
+        Returns:
+            The GovernanceConfig result after considering all config source options.
+        """
+        config = self.load_global_config()
+
+        # Override with environment variables
+        if os.getenv("DBT_PROJECT_PATHS"):
+            env_project_paths = os.getenv("DBT_PROJECT_PATHS", "").split(",")
+            config.project_paths = env_project_paths
+        config.global_rules_file = os.getenv("DBT_GLOBAL_RULES_FILE", config.global_rules_file)
+        config.dbt_cloud.api_token = os.getenv("DBT_CLOUD_API_TOKEN", config.dbt_cloud.api_token)
+
+        # Override with CLI options
+        if project_path:
+            config.project_path = project_path
+        if project_paths:
+            config.project_paths = list(project_paths)
+        if rules_file:
+            config.global_rules_file = rules_file
+
+        return config
+
+    def validate_config_structure(self) -> list[str]:
+        """Validate the structure of the configuration dictionary.
+
+        Returns:
+            list: A list of validation errors, empty if valid.
+        """
+        errors = []
+        dbt_cloud_config = self.dbt_cloud
+
+        # Validate required top-level keys
+        if not self.project_path and not self.project_paths:
+            errors.append("Missing required key: 'project_path' or 'project_paths'")
+
+        # Validate nested dbt_cloud structure
+        if dbt_cloud_config:
+            if dbt_cloud_config.api_token == "":  # nosec: B105
+                errors.append("Missing required key: 'dbt_cloud.api_token'")
+            if dbt_cloud_config.organization_id == "":
+                errors.append("Missing required key: 'dbt_cloud.organization_id'")
+
+            # Confirm each project path is default_projects exists as a valid Path
+            for project_path in dbt_cloud_config.default_projects:
+                errors.append(f"dbt_cloud.default_projects: Invalid project path: {project_path}") if not Path.exists(
+                    Path(project_path)
+                ) else None
+
+        return errors
+

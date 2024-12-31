@@ -92,7 +92,7 @@ class DbtProject(BaseModel):
         if not manifest_path.exists():
             raise FileNotFoundError(f"Manifest file not found at {manifest_path}")
 
-        with Path.open(manifest_path, "r") as f:
+        with Path.open(manifest_path, mode="r") as f:
             manifest_data = json.load(f)
 
         self._manifest = Manifest.from_dict(manifest_data)

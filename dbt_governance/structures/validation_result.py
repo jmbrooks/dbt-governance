@@ -1,9 +1,10 @@
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Annotated, Any, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
+import dbt_governance.utils as utils
 from dbt_governance.structures.severity import Severity
 
 
@@ -50,7 +51,8 @@ class ValidationResult(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
 
     rule_name: str = Field(..., description="The name of the rule being validated.")
-    dbt_project_path: Path = Field(..., description="The path to the dbt project directory.")
+
+    dbt_project_path: Annotated[Union[str, Path], AfterValidator(utils.validate_dbt_path)] = Field(..., description="The path to the dbt project directory.")
     resource_type: str = Field(..., description="The type of resource being validated.")
     unique_id: str = Field(..., description="The unique identifier of the resource being validated.")
     status: ValidationStatus = Field(..., description="The status of the rule validation.")

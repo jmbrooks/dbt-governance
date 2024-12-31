@@ -1,4 +1,4 @@
-from dbt_governance.config import load_config
+from dbt_governance.structures.governance_config import load_config
 from dbt_governance.initialize import load_rules
 from dbt_governance.structures.governance_rule import GovernanceRule
 

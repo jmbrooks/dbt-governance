@@ -27,7 +27,7 @@ def load_rules(rules_file: Optional[Union[str, Path]], include_not_enabled: bool
         raise FileNotFoundError(f"Rules file not found: {rules_file}")
 
     try:
-        with Path.open(rules_file, "r") as f:
+        with Path.open(rules_file, mode="r") as f:
             yaml_data = yaml.safe_load(f) or {}
 
         rule_evaluation_config_data = yaml_data.get("rule_evaluation_config", {})
