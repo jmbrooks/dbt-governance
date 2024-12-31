@@ -33,8 +33,8 @@ def test_version_option() -> None:
 
 @patch("dbt_governance.cli.evaluate_rules")
 @patch("dbt_governance.cli.load_rules")
-def test_check_command(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> None:
-    """Test the `check` command."""
+def test_evaluate_command(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> None:
+    """Test the `evaluate` command."""
     runner = CliRunner()
 
     # Create a temporary rules.yml file
@@ -54,7 +54,7 @@ def test_check_command(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> 
         ValidationResult(
             rule_name="Owner Metadata",
             status=ValidationStatus.PASSED,
-            dbt_project_path="path/to/dbt/project",
+            dbt_project_path=Path("path/to/dbt/project"),
             resource_type="model",
             unique_id="model.my_project.dim_date",
             reason=None,
@@ -79,7 +79,7 @@ def test_check_command(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> 
     result = runner.invoke(
         dbt_governance_cli,
         [
-            "check",
+            "evaluate",
             "--project-path",
             str(tmp_path),
             "--rules-file",
@@ -89,7 +89,7 @@ def test_check_command(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> 
 
     # Assertions
     assert result.exit_code == 0, f"Unexpected output: {result.output}"
-    assert "Governance Check Results:" in result.output
+    assert "Governance Evaluation Results:" in result.output
     assert "Passed: 1" in result.output
     assert "Failed: 0" in result.output
 
@@ -100,8 +100,8 @@ def test_check_command(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> 
 
 @patch("dbt_governance.cli.evaluate_rules")
 @patch("dbt_governance.cli.load_rules")
-def test_check_command_with_severity(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> None:
-    """Test the `check` command with a severity filter."""
+def test_evaluate_command_with_severity(mock_load_rules, mock_evaluate_rules, tmp_path: Path) -> None:
+    """Test the `evaluate` command with a severity filter."""
     runner = CliRunner()
 
     # Create a temporary rules.yml file
@@ -136,7 +136,7 @@ def test_check_command_with_severity(mock_load_rules, mock_evaluate_rules, tmp_p
         ValidationResult(
             rule_name="Primary Key Test",
             status=ValidationStatus.PASSED,
-            dbt_project_path="path/to/dbt/project",
+            dbt_project_path=Path("path/to/dbt/project"),
             resource_type="model",
             unique_id="model.my_project.dim_date",
             reason=None,
@@ -161,7 +161,7 @@ def test_check_command_with_severity(mock_load_rules, mock_evaluate_rules, tmp_p
     result = runner.invoke(
         dbt_governance_cli,
         [
-            "check",
+            "evaluate",
             "--project-path",
             str(tmp_path),
             "--rules-file",
@@ -173,7 +173,7 @@ def test_check_command_with_severity(mock_load_rules, mock_evaluate_rules, tmp_p
 
     # Assertions
     assert result.exit_code == 0, f"Unexpected output: {result.output}"
-    assert "Governance Check Results:" in result.output
+    assert "Governance Evaluate Results:" in result.output
     assert "Passed: 1" in result.output
     assert "Failed: 0" in result.output
     # Verify the results.details contains only the high severity rule

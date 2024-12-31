@@ -20,13 +20,18 @@ class DbtCloudConfig(BaseModel):
 
     api_token: str = Field(..., description="The dbt Cloud API token.")
     organization_id: str = Field(..., description="The dbt Cloud organization ID.")
-    default_projects: list[str] = Field(
-        [], description="A list of default project names to use for dbt Cloud API interactions."
+    default_projects: Optional[list[str]] = Field(
+        ..., description="A list of default project names to use for dbt Cloud API interactions."
     )
+
+    def __post_init__(self):
+        """Post initialization steps for dbt cloud configuration."""
+        if self.default_projects is None:
+            self.default_projects = []
 
     def __bool__(self):
         """Check if the DbtCloudConfig object has any values set."""
-        return any(self.dict().values())
+        return any(self.model_dump().values())
 
     @classmethod
     def from_governance_config(cls, governance_config: "GovernanceConfig") -> "DbtCloudConfig":
@@ -42,24 +47,28 @@ class GovernanceConfig(BaseModel):
     """A configuration object for the dbt-governance tool.
 
     Attributes:
-        project_path (str): Path to a single dbt project.
-        project_paths (list[str]): List of dbt project paths.
+        project_path (Optional[str]): Path to a single dbt project, must specify either this or project_paths.
+        project_paths (Optional[list[str]]): List of dbt project paths, must specify either this or project_path.
         output_path (str): Path to the output file.
         global_rules_file (Optional[str]): Path to a global rules file.
         dbt_cloud (DbtCloudConfig): Configuration for dbt Cloud API interactions.
-
     """
 
-    project_path: Path = Field("", description="Path to a single dbt project.")
-    project_paths: list[Path] = Field([], description="List of dbt project paths.")
+    project_path: Optional[Path] = Field(None, description="Path to a single dbt project.")
+    project_paths: Optional[list[Path]] = Field(None, description="List of dbt project paths.")
     output_path: str = Field(constants.DEFAULT_OUTPUT_FILE_NAME, description="Path to the output file.")
     global_rules_file: str = Field(constants.DEFAULT_RULES_FILE_NAME, description="Path to a global rules file.")
     dbt_cloud: Optional[DbtCloudConfig] = Field(None, description="Configuration for dbt Cloud API interactions.")
 
+    def __post_init__(self):
+        """Post initialization steps for GovernanceConfig."""
+        if self.project_paths is None:
+            self.project_paths = []
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "GovernanceConfig":
         return cls(
-            project_path=data.get("project_path", ""),
+            project_path=Path(data.get("project_path", "")),
             project_paths=data.get("project_paths", []),
             output_path=data.get("output_path", constants.DEFAULT_OUTPUT_FILE_NAME),
             global_rules_file=data.get("global_rules_file", constants.DEFAULT_RULES_FILE_NAME),
