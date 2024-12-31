@@ -4,7 +4,7 @@ import dbt_governance.constants as constants
 import dbt_governance.utils as utils
 from dbt_governance import __version__
 from dbt_governance.structures.governance_config import GovernanceConfig
-from dbt_governance.initialize import load_rules
+from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig
 from dbt_governance.logging_config import green, logger, red, yellow
 from dbt_governance.structures.severity import Severity
 from dbt_governance.structures.validation_result import ValidationStatus
@@ -51,7 +51,7 @@ def evaluate(project_path: str, project_paths: list[str], rules_file: str, sever
     logger.debug(f"Running governance checks with configuration: {config}")
 
     # Load rules configuration
-    governance_rules_config = load_rules(config.global_rules_file)
+    governance_rules_config = GovernanceRulesConfig.from_yaml_file(config.global_rules_file)
     logger.debug(f"Loaded governance rules config: {governance_rules_config}")
 
     # Filter rules by severity, if specified
