@@ -1,0 +1,36 @@
+# Workflow Configuration
+#
+# This workflow runs on every push to the main branch and:
+# - Runs all project tests via pytest
+# - Uploads test coverage report to Codecov
+
+name: Main branch deploy steps
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  test-and-coverage:
+    name: Run tests and collect coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - name: Install dependencies
+        run: pip install pytest pytest-cov
+
+      - name: Run tests
+        run: pytest --cov-branch --cov-report=xml
+
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
