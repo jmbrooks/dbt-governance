@@ -230,7 +230,7 @@ def test_list_rules_command(mock_load_rules, tmp_path: Path) -> None:
     mock_load_rules.assert_called_once_with(str(rules_file))
 
 
-@patch("dbt_governance.cli.validate_config_structure")
+@patch("dbt_governance.cli.validate_config")
 def test_validate_config_valid(mock_validate_config_structure, tmp_path: Path) -> None:
     """Test the `validate_config` command with a valid configuration."""
     runner = CliRunner()
@@ -256,7 +256,7 @@ def test_validate_config_valid(mock_validate_config_structure, tmp_path: Path) -
     assert mock_validate_config_structure.called
 
 
-@patch("dbt_governance.cli.validate_config_structure")
+@patch("dbt_governance.cli.validate_config")
 def test_validate_config_yaml_error(mock_validate_config_structure, tmp_path: Path) -> None:
     """Test the `validate_config` command with a YAML syntax error."""
     runner = CliRunner()
@@ -274,7 +274,7 @@ def test_validate_config_yaml_error(mock_validate_config_structure, tmp_path: Pa
     assert not mock_validate_config_structure.called
 
 
-@patch("dbt_governance.cli.validate_config_structure")
+@patch("dbt_governance.cli.validate_config")
 def test_validate_config_load_error(mock_validate_config_structure, tmp_path: Path) -> None:
     """Test the `validate_config` command with a file loading error."""
     runner = CliRunner()
@@ -291,7 +291,7 @@ def test_validate_config_load_error(mock_validate_config_structure, tmp_path: Pa
     assert not mock_validate_config_structure.called
 
 
-@patch("dbt_governance.cli.validate_config_structure")
+@patch("dbt_governance.cli.validate_config")
 def test_validate_config_with_validation_errors(mock_validate_config_structure, tmp_path: Path) -> None:
     """Test the `validate_config` command with validation errors."""
     runner = CliRunner()

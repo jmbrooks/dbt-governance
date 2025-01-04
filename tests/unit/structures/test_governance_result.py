@@ -50,7 +50,7 @@ def test_governance_result_summary_evaluations() -> None:
     assert summary.total_evaluations == summary.total_passed + summary.total_failed
 
 
-def test_governance_result_to_dict() -> None:
+def test_governance_result_to_dict(dbt_project) -> None:
     """Test GovernanceResult's to_dict method for correct serialization."""
     # Mock metadata
     metadata = GovernanceResultMetadata(
@@ -61,7 +61,7 @@ def test_governance_result_to_dict() -> None:
     summary = GovernanceResultSummary(total_evaluations=2, total_passed=1, total_failed=1)
 
     # Mock validation results
-    project_path = "path/to/dbt/project"
+    project_path = dbt_project.project_path
     validation_results_details = [
         ValidationResult(
             rule_name="Test Rule 1",
