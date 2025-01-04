@@ -65,7 +65,16 @@ logger.addHandler(console_handler)
 
 
 def return_in_color(text: str, color_code: Color, use_color: bool = True) -> str:
-    """Output the given text in the specified color, so long as `use_color` is set to True (the default)."""
+    """Output the given text in the specified color, so long as `use_color` is set to True (the default).
+
+    Args:
+        text (str): The text to output.
+        color_code (Color): The color to output.
+        use_color (bool, optional): Whether to output the text in the color. Defaults to True.
+
+    Returns:
+        str: The output of the given text in the given color code.
+    """
     return "{}{}{}".format(color_code.value, text, Color.RESET_ALL.value) if use_color else text
 
 

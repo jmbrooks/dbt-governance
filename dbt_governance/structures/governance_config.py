@@ -140,8 +140,9 @@ class GovernanceConfig(BaseModel):
             )
 
         # Finally, override with CLI options, if specified
-        governance_config.project_paths =  [Path(project_path) for project_path in project_paths] if project_paths \
-            else [project_path]
+        governance_config.project_paths = (
+            [Path(project_path) for project_path in project_paths] if project_paths else [project_path]
+        )
 
         if rules_file:
             governance_config.global_rules_file = rules_file

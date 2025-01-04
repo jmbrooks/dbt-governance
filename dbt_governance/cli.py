@@ -47,11 +47,13 @@ def evaluate(project_path: str, project_paths: list[str], rules_file: str, sever
     """Run governance checks on the specified dbt project(s).
 
     Args:
-        project_path: Path to a single dbt project directory.
-        project_paths: Paths to one or more dbt project directories.
-        rules_file: Valid path to a custom rules file.
-        severity: The severity or severities to limit the evaluation task to.
+        project_path (str): Path to a single dbt project directory.
+        project_paths (list[str]): Paths to one or more dbt project directories.
+        rules_file (str): Valid path to a custom rules file.
+        severity (str): The severity or severities to limit the evaluation task to.
 
+    Returns:
+        None.
     """
     config = GovernanceConfig.load_config(project_path, project_paths, rules_file)
     evaluate_run_instance = EvaluateRunner()
@@ -183,7 +185,16 @@ def evaluate(project_path: str, project_paths: list[str], rules_file: str, sever
     help="Path to a custom rules file.",
 )
 def list_rules(project_path: str, project_paths: list[str], rules_file: str) -> None:
-    """List all configured and enabled governance rules."""
+    """List all configured and enabled governance rules.
+
+    Args:
+        project_path (str): Path to single dbt project directory.
+        project_paths (list[str]): Paths to one or more dbt project directories.
+        rules_file (str): Path to custom rules file.
+
+    Returns:
+        None.
+    """
     click.echo("Listing active governance rules...")
     governance_rules = list_rules_task(project_path, project_paths, rules_file)
     for rule in governance_rules:
@@ -199,7 +210,14 @@ def list_rules(project_path: str, project_paths: list[str], rules_file: str) -> 
     help="Path to the configuration file to validate.",
 )
 def validate_config(config_file: str) -> None:
-    """Validate the dbt-governance project configuration file."""
+    """Validate the dbt-governance project configuration file.
+
+    Args:
+        config_file (str): Path to configuration file.
+
+    Returns:
+        None.
+    """
     click.echo(f"Validating configuration file: {config_file}")
 
     is_valid, valid_config_message = validate_config_task(config_file)
