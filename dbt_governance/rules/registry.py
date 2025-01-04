@@ -104,8 +104,17 @@ class RulesRegistry:
 # )
 
 
-def register_rule(type: str = None, severity=None, description: str = None, name: str = None, enabled: bool = True, rule: Optional[GovernanceRule] = None, **kwargs) -> callable:
+def register_rule(
+    type: str = None,
+    severity=None,
+    description: str = None,
+    name: str = None,
+    enabled: bool = True,
+    rule: Optional[GovernanceRule] = None,
+    **kwargs,
+) -> callable:
     """Decorator to register a governance rule with RulesRegistry."""
+
     def decorator(func: callable) -> callable:
         # Create and register the rule
         if rule:
@@ -124,4 +133,5 @@ def register_rule(type: str = None, severity=None, description: str = None, name
 
         # Return the original function
         return func
+
     return decorator

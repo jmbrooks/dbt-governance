@@ -10,6 +10,7 @@ from dbt_governance.rules.has_meta_rules import has_meta_property
 from dbt_governance.rules.has_tag_rules import has_tag
 from dbt_governance.rules.model_owner_rule import model_owner_rule
 from dbt_governance.rules.primary_key_rule import validate_primary_key_rule
+from dbt_governance.structures.evaluate_runner import EvaluateRunner
 from dbt_governance.structures.governance_result import (
     GovernanceResult,
     GovernanceResultMetadata,
@@ -43,6 +44,7 @@ def load_global_rules_config(rules_file: Path) -> dict[str, Any]:
 
 
 def evaluate_task(
+    evaluate_run_instance: EvaluateRunner,
     rules: list[GovernanceRule],
     project_paths: list[Union[str, Path]],
     check_uuid: str,
@@ -51,6 +53,7 @@ def evaluate_task(
     """CLI task action to evaluate governance rules against dbt project metadata.
 
     Args:
+        evaluate_run_instance: The `dbt-governance evaluate` run instance this task run is a part of.
         rules (list[GovernanceRule]): List of governance rules.
         project_paths (list[Union[str, Path]]): List of dbt project paths.
         check_uuid (str): UUID for the dbt-governance check run and result.
@@ -94,6 +97,7 @@ def evaluate_task(
                 dbt_project_manifest_generated_at=str(dbt_project.generated_at),
                 dbt_selection_syntax=rule.dbt_selection_clause,
             )
+            evaluate_run_instance.rule_evaluation = rule_evaluation
 
             # Evaluation logic
             # 1. Evaluate 'exception' rules with uniquely specific checks
@@ -115,6 +119,7 @@ def evaluate_task(
             if rule.type == "has_tag":
                 rule_evaluation.validation_results.extend(
                     has_tag(
+                        evaluate_run_instance,
                         rule,
                         manifest_data,
                         project_path,

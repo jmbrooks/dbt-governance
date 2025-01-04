@@ -4,6 +4,7 @@ import dbt_governance.constants as constants
 import dbt_governance.utils as utils
 from dbt_governance import __version__
 from dbt_governance.rules.registry import register_rule
+from dbt_governance.structures.evaluate_runner import EvaluateRunner
 from dbt_governance.structures.governance_config import GovernanceConfig
 from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig
 from dbt_governance.logging_config import green, logger, red, yellow
@@ -43,12 +44,20 @@ def cli() -> click.BaseCommand:
     help="Filter results by one or more severities (e.g., 'critical', 'high', 'medium', 'low').",
 )
 def evaluate(project_path: str, project_paths: list[str], rules_file: str, severity: str) -> None:
-    """Run governance checks on the specified dbt project(s)."""
-    config = GovernanceConfig.load_config(project_path, project_paths, rules_file)
-    output_file_path = config.output_path
-    check_uuid = utils.get_uuid()
+    """Run governance checks on the specified dbt project(s).
 
-    click.echo(f"Running dbt-governance v{__version__} check with UUID: {check_uuid}")
+    Args:
+        project_path: Path to a single dbt project directory.
+        project_paths: Paths to one or more dbt project directories.
+        rules_file: Valid path to a custom rules file.
+        severity: The severity or severities to limit the evaluation task to.
+
+    """
+    config = GovernanceConfig.load_config(project_path, project_paths, rules_file)
+    evaluate_run_instance = EvaluateRunner()
+    output_file_path = config.output_path
+
+    click.echo(f"Running dbt-governance v{__version__} evaluation with UUID: {evaluate_run_instance.run_uuid}")
     logger.debug(f"Running governance checks with configuration: {config}")
 
     # Load rules configuration
@@ -70,8 +79,14 @@ def evaluate(project_path: str, project_paths: list[str], rules_file: str, sever
     click.echo(f"dbt-governance project path(s) scope: {', '.join(str(path) for path in project_paths)}")
 
     # Evaluate configured and selected rules against dbt project(s)
-    governance_evaluation = evaluate_task(rules, project_paths, check_uuid, __version__)
-    logger.debug(f"Rule evaluation results: {governance_evaluation}")
+    governance_evaluation = evaluate_task(
+        evaluate_run_instance,
+        rules,
+        project_paths,
+        evaluate_run_instance.run_uuid,
+        __version__,
+    )
+    logger.debug(f"Rule evaluations completed")
 
     # Output results
 
@@ -193,30 +208,6 @@ def validate_config(config_file: str) -> None:
         click.echo("Configuration validation failed with the following errors:")
 
     click.echo(valid_config_message)
-
-    # try:
-    #     with open(config_file, mode="r") as f:
-    #         config = yaml.safe_load(f)
-    # except yaml.YAMLError as e:
-    #     click.echo(f"YAML Parsing Error: {e}", err=True)
-    #     return
-    # except Exception as e:
-    #     click.echo(f"Failed to load configuration file: {e}", err=True)
-    #     return
-    #
-    # errors = validate_config_structure(config)
-    # if errors:
-    #     click.echo("Configuration validation failed with the following errors:")
-    #     for error in errors:
-    #         click.echo(f"- {error}", err=True)
-    # else:
-    #     click.echo(green("Configuration file is valid!"))
-    #
-    # # Log the loaded configuration (sensitive keys redacted)
-    # redacted_config = config.copy()
-    # if redacted_config and "api_token" in redacted_config.get("dbt_cloud"):
-    #     redacted_config["dbt_cloud"]["api_token"] = "REDACTED"  # nosec B105 (no hardcode issue, false flag)
-    # logger.debug(f"Loaded Configuration: {redacted_config}")
 
 
 if __name__ == "__main__":

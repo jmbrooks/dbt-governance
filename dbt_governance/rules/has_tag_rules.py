@@ -1,10 +1,10 @@
 from typing import Optional
 
-from dbt_governance.rule_handler import append_evaluation_result
 from dbt_governance.structures.validation_result import ValidationResult
 
 
 def has_tag(
+    evaluation_run_instance: "EvaluateRunner",
     rule,
     manifest,
     project_path: str,
@@ -74,14 +74,14 @@ def has_tag(
         model_tags = node.config.tags if node.config.tags else node.tags
         is_passing_evaluation = tag_name in model_tags
 
-        append_evaluation_result(
+        evaluation_run_instance.append_rule_evaluation_result(
+            rule_evaluation_index=0,
             is_passing_evaluation=is_passing_evaluation,
-            results=results,
             rule=rule,
             project_path=project_path,
             node_resource_type=node.resource_type,
             node_unique_id=node.unique_id,
-            failed_evaluation_description=f"Model {node_id} is missing required '{tag_name}' tag.",
+            evaluation_description=f"Model {node_id} is missing required '{tag_name}' tag.",
         )
 
     return results

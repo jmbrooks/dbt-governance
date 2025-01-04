@@ -108,8 +108,7 @@ class GovernanceRulesConfig(BaseModel):
                 try:
                     rule = GovernanceRule.from_dict(rule_data)
                     if not include_not_enabled and not rule.enabled:
-                        logger.debug(
-                            f"Skipping rule '{rule.name}' as it not marked as enabled in the rules config.")
+                        logger.debug(f"Skipping rule '{rule.name}' as it not marked as enabled in the rules config.")
                         continue
                     rules.append(rule)
                 except TypeError as e:

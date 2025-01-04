@@ -183,4 +183,3 @@ class GovernanceConfig(BaseModel):
                 ) else None
 
         return errors
-
