@@ -3,14 +3,13 @@
 [![codecov](https://codecov.io/github/jmbrooks/dbt-governance/graph/badge.svg?token=0TS3TU8L39)](https://codecov.io/github/jmbrooks/dbt-governance)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
+![License](https://img.shields.io/github/license/jmbrooks/dbt-governance)
 
-A flexible governance tool for [dbt](https://www.getdbt.com/) projects, enabling teams to define and enforce custom
+**dbt-governance** is a flexible governance tool for [dbt](https://www.getdbt.com/) projects, enabling teams to define and enforce custom
 rules for data quality, privacy, security, and compliance.
 
-Supports single and multi-project [dbt mesh](https://www.getdbt.com/product/dbt-mesh) configurations, with integrations
+It supports single and multi-project [dbt mesh](https://www.getdbt.com/product/dbt-mesh) configurations out-of-the-box, with integrations
 for local development and planned compatibility with dbt Cloud.
-
-Includes features for metadata validation, test coverage checks, and rule-based governance health reporting.
 
 ## Basic Usage
 
