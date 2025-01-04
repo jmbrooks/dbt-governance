@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: pip install pytest pytest-cov
 
+      - name: Install editable package
+        run: pip install -e .
+
       - name: Run tests
         env:
           PYTHONPATH: ${{ github.workspace }}
