@@ -105,10 +105,10 @@ class RulesRegistry:
 
 
 def register_rule(
-    type: str = None,
+    type: Optional[str] = None,
     severity=None,
-    description: str = None,
-    name: str = None,
+    description: Optional[str] = None,
+    name: Optional[str] = None,
     enabled: bool = True,
     rule: Optional[GovernanceRule] = None,
     **kwargs,

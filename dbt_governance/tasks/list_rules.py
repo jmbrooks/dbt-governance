@@ -1,6 +1,6 @@
 from dbt_governance.structures.governance_config import GovernanceConfig
-from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig
 from dbt_governance.structures.governance_rule import GovernanceRule
+from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig
 
 
 def list_rules_task(project_path: str, project_paths: list[str], rules_file: str) -> list[GovernanceRule]:

@@ -1,10 +1,11 @@
 from typing import Optional
 
+from dbt_governance.structures.evaluate_runner import EvaluateRunner
 from dbt_governance.structures.validation_result import ValidationResult
 
 
 def has_tag(
-    evaluation_run_instance: "EvaluateRunner",
+    evaluation_run_instance: EvaluateRunner,
     rule,
     manifest,
     project_path: str,
@@ -16,6 +17,7 @@ def has_tag(
     """Validate that all dbt models specify any required tags.
 
     Args:
+        evaluation_run_instance (EvaluateRunner): Current instance of the evaluation run.
         rule (GovernanceRule): The rule to validate.
         manifest (dbt.contracts.graph.manifest.Manifest): dbt manifest artifact object.
         project_path (str): The path to the dbt project directory.

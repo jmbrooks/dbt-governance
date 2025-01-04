@@ -1,20 +1,21 @@
-import colorama
 import logging
 import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
 
+import colorama
+
 from dbt_governance.logging_config import (
     DEBUG_LOG_FILE,
     ERROR_LOG_FILE,
     LOG_DIR,
     LOG_FORMAT,
+    LOGGER_NAME,
     green,
     logger,
     red,
     yellow,
-    LOGGER_NAME,
 )
 
 
@@ -53,7 +54,6 @@ def test_log_file_paths() -> None:
 def test_logger_handlers() -> None:
     """Test that the logger has the required handlers."""
     handler_types = [type(handler) for handler in logger.handlers]
-    print(handler_types)
     assert logging.handlers.RotatingFileHandler in handler_types, "RotatingFileHandler is missing"
     assert logging.StreamHandler in handler_types, "StreamHandler is missing"
 
@@ -103,7 +103,6 @@ def test_log_format(caplog) -> None:
     # Validate that each captured record matches the format
     for record in caplog.records:
         formatted_message = formatter.format(record)
-        print(formatted_message)
         assert LOGGER_NAME in formatted_message, "Logger name not found in formatted message."
         assert "DEBUG" in formatted_message, "Log level not found in formatted message."
         assert "This is a test message." in formatted_message, "Log message not found in formatted message."

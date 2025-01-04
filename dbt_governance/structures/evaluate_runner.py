@@ -1,12 +1,13 @@
 from datetime import datetime
-from pydantic import BaseModel, Field, PrivateAttr
 from typing import Optional
 
+from pydantic import BaseModel, Field, PrivateAttr
+
 import dbt_governance.utils as utils
+from dbt_governance.structures.evaluation_status import EvaluationStatus
 from dbt_governance.structures.governance_result import GovernanceResultMetadata
 from dbt_governance.structures.governance_rule import GovernanceRule
 from dbt_governance.structures.rule_evaluation import RuleEvaluation
-from dbt_governance.structures.evaluation_status import EvaluationStatus
 from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
 
 

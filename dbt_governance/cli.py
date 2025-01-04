@@ -3,11 +3,11 @@ import click
 import dbt_governance.constants as constants
 import dbt_governance.utils as utils
 from dbt_governance import __version__
+from dbt_governance.logging_config import green, logger, red, yellow
 from dbt_governance.rules.registry import register_rule
 from dbt_governance.structures.evaluate_runner import EvaluateRunner
 from dbt_governance.structures.governance_config import GovernanceConfig
 from dbt_governance.structures.governance_rules_config import GovernanceRulesConfig
-from dbt_governance.logging_config import green, logger, red, yellow
 from dbt_governance.structures.severity import Severity
 from dbt_governance.structures.validation_result import ValidationStatus
 from dbt_governance.tasks import evaluate_task, list_rules_task, validate_config_task
@@ -86,7 +86,7 @@ def evaluate(project_path: str, project_paths: list[str], rules_file: str, sever
         evaluate_run_instance.run_uuid,
         __version__,
     )
-    logger.debug(f"Rule evaluations completed")
+    logger.debug("Rule evaluations completed")
 
     # Output results
 

@@ -11,7 +11,7 @@ import dbt_governance.utils as utils
 PROJECT_NAME = "dbt-governance"
 
 # Test cases
-assemble_dbt_selection_clause_test_cases = [
+assemble_dbt_selection_clause_test_cases = (
     # Test select clause only
     ({"select_clause": "model_a model_c model_b", "exclude_clause": None}, " --select model_a model_b model_c"),
     # Test exclude clause only
@@ -28,10 +28,10 @@ assemble_dbt_selection_clause_test_cases = [
         {"select_clause": "  model_a   model_c model_b   ", "exclude_clause": "   model_x  model_z    model_y"},
         " --select model_a model_b model_c --exclude model_x model_y model_z",
     ),
-]
+)
 
 
-@pytest.mark.parametrize("inputs, expected", assemble_dbt_selection_clause_test_cases)
+@pytest.mark.parametrize(("inputs", "expected"), assemble_dbt_selection_clause_test_cases)
 def test_assemble_dbt_selection_clause(inputs: dict, expected: str) -> None:
     """Parameterized test for assemble_dbt_selection_clause."""
     result = utils.assemble_dbt_selection_clause(**inputs)

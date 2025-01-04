@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Any, Optional, Union
 
 import yaml
-
 from pydantic import BaseModel, ConfigDict, Field
 
 from dbt_governance.logging_config import logger

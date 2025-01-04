@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Any, Optional, Union
 
 import yaml
-
 from pydantic import BaseModel, ConfigDict, Field
 
 from dbt_governance import constants
@@ -141,10 +140,9 @@ class GovernanceConfig(BaseModel):
             )
 
         # Finally, override with CLI options, if specified
-        if project_path:
-            governance_config.project_path = project_path
-        if project_paths:
-            governance_config.project_paths = list(Path(project_path) for project_path in project_paths)
+        governance_config.project_paths =  [Path(project_path) for project_path in project_paths] if project_paths \
+            else [project_path]
+
         if rules_file:
             governance_config.global_rules_file = rules_file
 
