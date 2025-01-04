@@ -13,7 +13,8 @@ from dbt_governance.logging_config import (
     green,
     logger,
     red,
-    yellow, LOGGER_NAME,
+    yellow,
+    LOGGER_NAME,
 )
 
 

@@ -14,19 +14,15 @@ PROJECT_NAME = "dbt-governance"
 assemble_dbt_selection_clause_test_cases = [
     # Test select clause only
     ({"select_clause": "model_a model_c model_b", "exclude_clause": None}, " --select model_a model_b model_c"),
-
     # Test exclude clause only
     ({"select_clause": None, "exclude_clause": "model_x model_z model_y"}, " --exclude model_x model_y model_z"),
-
     # Test both select and exclude clauses
     (
         {"select_clause": "model_a model_c model_b", "exclude_clause": "model_x model_z model_y"},
         " --select model_a model_b model_c --exclude model_x model_y model_z",
     ),
-
     # Test empty clauses
     ({"select_clause": None, "exclude_clause": None}, ""),
-
     # Test whitespace in clauses
     (
         {"select_clause": "  model_a   model_c model_b   ", "exclude_clause": "   model_x  model_z    model_y"},

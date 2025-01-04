@@ -27,6 +27,19 @@ def mock_dbt_project(tmp_path: Path) -> Path:
 
 
 @pytest.fixture()
+def mock_governance_config_file(tmp_path: Path) -> Path:
+    """Set up a temporary governance config file."""
+    governance_config_file = tmp_path / "config.yml"
+    governance_config_file.write_text(
+        f"""
+        project_path: {tmp_path}
+        global_rules_file: {tmp_path}/rules.yml
+        """
+    )
+    return governance_config_file
+
+
+@pytest.fixture()
 def mock_rules_file(tmp_path: Path) -> Path:
     """Set up a temporary rules file."""
     rules_file = tmp_path / "rules.yml"
