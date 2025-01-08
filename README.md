@@ -11,6 +11,14 @@ rules for data quality, privacy, security, and compliance.
 It supports single and multi-project [dbt mesh](https://www.getdbt.com/product/dbt-mesh) configurations out-of-the-box, with integrations
 for local development and planned compatibility with dbt Cloud.
 
+## 🚧 Work in Progress 🚧
+
+This project is currently in **pre-alpha** and under active development.  
+⚠️ **Not ready for production use**. Expect frequent changes and potential breaking updates.  
+
+We plan to make it more stable and production-ready by *April 2025*.  
+Contributions and feedback are welcome as we build this out!
+
 ## Basic Usage
 
 In short, if your team has set any rules for your dbt project that should be enforced, dbt-governance may be valuable
