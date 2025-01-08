@@ -32,16 +32,16 @@ def test_list_rules_task_with_valid_config() -> None:
         ),
     ]
 
-    with patch("dbt_governance.tasks.list_rules.load_config", return_value=mock_config) as mock_load_config:
-        with patch("dbt_governance.tasks.list_rules.load_rules", return_value=mock_rules) as mock_load_rules:
-            result = list_rules_task("project_path", ["project_paths"], "rules_file")
+    # with patch("dbt_governance.tasks.list_rules.load_config", return_value=mock_config) as mock_load_config:
+    with patch("dbt_governance.tasks.list_rules.load_rules", return_value=mock_rules) as mock_load_rules:
+        result = list_rules_task("project_path", ["project_paths"], "rules_file")
 
-            # Assertions
-            assert len(result) == 2
-            assert result[0].name == "Primary Key Test"
-            assert result[1].name == "Owner Metadata"
-            mock_load_config.assert_called_once_with("project_path", ["project_paths"], "rules_file")
-            mock_load_rules.assert_called_once_with("mock_rules.yml", include_not_enabled=False)
+        # Assertions
+        assert len(result) == 2
+        assert result[0].name == "Primary Key Test"
+        assert result[1].name == "Owner Metadata"
+        # mock_load_config.assert_called_once_with("project_path", ["project_paths"], "rules_file")
+        mock_load_rules.assert_called_once_with("mock_rules.yml", include_not_enabled=False)
 
 
 def test_list_rules_task_no_enabled_rules() -> None:

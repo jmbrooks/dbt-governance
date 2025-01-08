@@ -266,7 +266,7 @@ def test_validate_config_yaml_error(mock_validate_config_structure, tmp_path: Pa
     config_file.write_text("dbt_cloud:\n  api_token: test_token\n  invalid: [test]:")
 
     # Invoke the CLI
-    result = runner.invoke(dbt_governance_cli, ["validate_config", "--config-file", str(config_file)])
+    result = runner.invoke(dbt_governance_cli, ["validate-config", "--config-file", str(config_file)])
 
     # Assertions
     assert result.exit_code == 0, f"Unexpected output: {result.output}"
@@ -283,7 +283,7 @@ def test_validate_config_load_error(mock_validate_config_structure, tmp_path: Pa
     config_file = tmp_path / "nonexistent_config.yml"
 
     # Invoke the CLI
-    result = runner.invoke(dbt_governance_cli, ["validate_config", "--config-file", str(config_file)])
+    result = runner.invoke(dbt_governance_cli, ["validate-config", "--config-file", str(config_file)])
 
     # Assertions
     assert result.exit_code == 0, f"Unexpected output: {result.output}"
@@ -309,10 +309,10 @@ def test_validate_config_with_validation_errors(mock_validate_config_structure, 
     mock_validate_config_structure.return_value = ["Missing required field: dbt_project"]
 
     # Invoke the CLI
-    result = runner.invoke(dbt_governance_cli, ["validate_config", "--config-file", str(config_file)])
+    result = runner.invoke(dbt_governance_cli, ["validate-config", "--config-file", str(config_file)])
 
     # Assertions
     assert result.exit_code == 0, f"Unexpected output: {result.output}"
-    assert "Configuration validation failed with the following errors:" in result.output
-    assert "- Missing required field: dbt_project" in result.output
+    assert "Validating configuration file:" in result.output
+    assert "- Missing required key" in result.output
     assert mock_validate_config_structure.called

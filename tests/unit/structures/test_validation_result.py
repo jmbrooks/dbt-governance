@@ -15,13 +15,14 @@ def test_validation_status_enum() -> None:
     assert repr(ValidationStatus.WARNING) == "The rule raised a non-critical concern."
 
 
-def test_validation_result_to_dict() -> None:
+def test_validation_result_to_dict(dbt_project) -> None:
     """Test the to_dict method of ValidationResult for expected output."""
+    project_path = dbt_project.project_path
     # Case with a reason provided
     result_with_reason = ValidationResult(
         rule_name="Example Rule",
         rule_severity=Severity.MEDIUM,
-        dbt_project_path="path/to/dbt/project",
+        dbt_project_path=project_path,
         resource_type="model",
         unique_id="model.my_project.dim_date",
         status=ValidationStatus.PASSED,
@@ -30,7 +31,7 @@ def test_validation_result_to_dict() -> None:
     expected_dict_with_reason = {
         "rule_name": "Example Rule",
         "rule_severity": "medium",
-        "dbt_project_path": "path/to/dbt/project",
+        "dbt_project_path": str(project_path),
         "resource_type": "model",
         "unique_id": "model.my_project.dim_date",
         "status": "passed",
@@ -42,7 +43,7 @@ def test_validation_result_to_dict() -> None:
     result_no_reason = ValidationResult(
         rule_name="Another Rule",
         rule_severity=Severity.MEDIUM,
-        dbt_project_path="path/to/dbt/project",
+        dbt_project_path=project_path,
         resource_type="model",
         unique_id="model.my_project.fct_orders",
         status=ValidationStatus.FAILED,
@@ -51,7 +52,7 @@ def test_validation_result_to_dict() -> None:
     expected_dict_no_reason = {
         "rule_name": "Another Rule",
         "rule_severity": "medium",
-        "dbt_project_path": "path/to/dbt/project",
+        "dbt_project_path": str(project_path),
         "resource_type": "model",
         "unique_id": "model.my_project.fct_orders",
         "status": "failed",
@@ -60,12 +61,12 @@ def test_validation_result_to_dict() -> None:
     assert result_no_reason.to_dict() == expected_dict_no_reason
 
 
-def test_validation_result_defaults() -> None:
+def test_validation_result_defaults(dbt_project) -> None:
     """Test the default behavior of ValidationResult for optional attributes."""
     result = ValidationResult(
         rule_name="Default Test Rule",
         status=ValidationStatus.WARNING,
-        dbt_project_path="path/to/dbt/project",
+        dbt_project_path=dbt_project.project_path,
         resource_type="model",
         unique_id="model.my_project.dim_date",
     )

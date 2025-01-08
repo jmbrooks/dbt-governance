@@ -61,7 +61,7 @@ def test_governance_result_to_dict(dbt_project) -> None:
     summary = GovernanceResultSummary(total_evaluations=2, total_passed=1, total_failed=1)
 
     # Mock validation results
-    project_path = dbt_project.project_path
+    project_path = str(dbt_project.project_path)
     validation_results_details = [
         ValidationResult(
             rule_name="Test Rule 1",
