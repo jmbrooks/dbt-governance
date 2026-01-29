@@ -52,6 +52,7 @@ dbt-governance = "dbt_governance.cli:cli"
 [dependency-groups]
 dev = [
     "bandit>=1.9",
+    "detect-secrets>=1.5.0",
     "mypy>=1.19",
     "pre-commit>=4.5",
     "pytest>=9.0",
