@@ -1,40 +1,64 @@
 # Workflow Configuration
 #
 # This workflow runs on every PR and:
-# - Runs all project configured checks and tests via tox
-# - Including bandit security checks, unit tests, linting and formatting checks
+#   - Verifies the uv lock is properly in sync
+#   - Runs all project pre-commit checks (ruff lint & format, SAST, secret detection, etc.)
+#   - Runs all configured tests (unit, integration, etc.), via tox
 
-name: pull-requests
+name: ci
+
 on:
   pull_request:
+  push:
+    branches: [ main, test, dev ]
 
 permissions:
   contents: read
 
-defaults:
-  run:
-    shell: bash
+concurrency:
+  group: pre-commit-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  setup-and-test:
+  run:
     runs-on: ubuntu-latest
-    container:
-      image: python:3.10-slim-buster
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-        timeout-minutes: 1
 
-      - name: Setup project environment
-        run: |-
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install poetry
-            poetry install --with dev
-        timeout-minutes: 5
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      # Ensure lockfile is in sync, fail if uv.lock is missing / outdated vs pyproject.toml
+      - name: Verify lockfile (uv sync --frozen)
+        run: |
+          uv venv .venv --seed --python 3.12
+          uv sync --frozen
+
+      # Cache pre-commit hook environments to speed up runs
+      - name: Cache pre-commit
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: |
+            pre-commit-${{ runner.os }}-
+
+      # PRs: Run full hook set on all files, fail on any violation
+      - name: pre-commit (PR)
+        if: github.event_name == 'pull_request'
+        run: uvx --from pre-commit pre-commit run --all-files --show-diff-on-failure
+
+      # Pushes to protected branches: Skip the branch commit hook, run all other hooks on all files
+      - name: pre-commit (push to main/test, skip no-commit-to-branch)
+        if: github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'test' || github.ref_name == 'dev')
+        env:
+          SKIP: no-commit-to-branch
+        run: uvx --from pre-commit pre-commit run --all-files --show-diff-on-failure
 
       - name: Run tests via tox
-        run: |-
-          . venv/bin/activate
-          tox
+        run: uvx --from tox tox
         timeout-minutes: 5

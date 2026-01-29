@@ -75,7 +75,7 @@ def return_in_color(text: str, color_code: Color, use_color: bool = True) -> str
     Returns:
         str: The output of the given text in the given color code.
     """
-    return "{}{}{}".format(color_code.value, text, Color.RESET_ALL.value) if use_color else text
+    return f"{color_code.value}{text}{Color.RESET_ALL.value}" if use_color else text
 
 
 def green(text: str) -> str:

@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
@@ -23,7 +23,7 @@ class DbtCloudConfig(BaseModel):
 
     api_token: str = Field(..., description="The dbt Cloud API token.")
     organization_id: str = Field(..., description="The dbt Cloud organization ID.")
-    default_projects: Optional[list[str]] = Field(
+    default_projects: list[str] | None = Field(
         ..., description="A list of default project names to use for dbt Cloud API interactions."
     )
 
@@ -57,11 +57,11 @@ class GovernanceConfig(BaseModel):
         dbt_cloud (DbtCloudConfig): Configuration for dbt Cloud API interactions.
     """
 
-    project_path: Optional[Path] = Field(None, description="Path to a single dbt project.")
-    project_paths: Optional[list[Path]] = Field(None, description="List of dbt project paths.")
+    project_path: Path | None = Field(None, description="Path to a single dbt project.")
+    project_paths: list[Path] | None = Field(None, description="List of dbt project paths.")
     output_path: str = Field(constants.DEFAULT_OUTPUT_FILE_NAME, description="Path to the output file.")
     global_rules_file: str = Field(constants.DEFAULT_RULES_FILE_NAME, description="Path to a global rules file.")
-    dbt_cloud: Optional[DbtCloudConfig] = Field(None, description="Configuration for dbt Cloud API interactions.")
+    dbt_cloud: DbtCloudConfig | None = Field(None, description="Configuration for dbt Cloud API interactions.")
 
     def __post_init__(self):
         """Post initialization steps for GovernanceConfig."""
@@ -104,9 +104,9 @@ class GovernanceConfig(BaseModel):
     @classmethod
     def load_config(
         cls,
-        project_path: Optional[Union[str, Path]] = None,
-        project_paths: Optional[Union[list[str], list[Path]]] = None,
-        rules_file: Optional[str] = None,
+        project_path: str | Path | None = None,
+        project_paths: list[str] | list[Path] | None = None,
+        rules_file: str | None = None,
     ) -> "GovernanceConfig":
         """Merge configurations from global config, environment variables, and CLI options.
 

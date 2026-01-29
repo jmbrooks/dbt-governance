@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, Field, PrivateAttr
 
@@ -24,10 +23,10 @@ class EvaluateRunner(BaseModel):
 
     run_status: EvaluationStatus = Field(EvaluationStatus.INITIALIZATION, description="Status of the evaluation run")
     run_started_at: datetime = Field(utils.get_utc_iso_timestamp(), description="Started time of the evaluation run")
-    dbt_project_scope: Optional[list[str]] = Field(None, description="List dbt project names included in this run")
-    rule_evaluation: Optional[RuleEvaluation] = Field(None, description="List of dbt rule evaluations executed")
-    metadata: Optional[GovernanceResultMetadata] = Field(None, description="Metadata about the run")
-    _run_uuid: Optional[str] = PrivateAttr(None)
+    dbt_project_scope: list[str] | None = Field(None, description="List dbt project names included in this run")
+    rule_evaluation: RuleEvaluation | None = Field(None, description="List of dbt rule evaluations executed")
+    metadata: GovernanceResultMetadata | None = Field(None, description="Metadata about the run")
+    _run_uuid: str | None = PrivateAttr(None)
 
     @property
     def run_uuid(self) -> str:
@@ -42,7 +41,7 @@ class EvaluateRunner(BaseModel):
         project_path: str,
         node_resource_type: str,
         node_unique_id: str,
-        evaluation_description: Optional[str] = None,
+        evaluation_description: str | None = None,
     ) -> None:
         """Append a ValidationResult object to the results list for any rule evaluation.
 

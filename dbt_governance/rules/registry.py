@@ -1,4 +1,4 @@
-from typing import ClassVar, Optional
+from typing import ClassVar
 
 from dbt_governance.logging_config import logger
 from dbt_governance.structures.governance_rule import GovernanceRule
@@ -105,12 +105,12 @@ class RulesRegistry:
 
 
 def register_rule(
-    type: Optional[str] = None,
+    type: str | None = None,
     severity=None,
-    description: Optional[str] = None,
-    name: Optional[str] = None,
+    description: str | None = None,
+    name: str | None = None,
     enabled: bool = True,
-    rule: Optional[GovernanceRule] = None,
+    rule: GovernanceRule | None = None,
     **kwargs,
 ) -> callable:
     """Decorator to register a governance rule with RulesRegistry."""

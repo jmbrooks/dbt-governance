@@ -7,7 +7,7 @@ import pytest
 from dbt_governance.dbt_project import DbtProject
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_manifest_data() -> Any:
     """Fixture to provide mock manifest data."""
     return {
@@ -20,7 +20,7 @@ def mock_manifest_data() -> Any:
     }
 
 
-@pytest.fixture()
+@pytest.fixture
 def dbt_project(tmp_path: Path) -> DbtProject:
     """Fixture to provide a DbtProject with a temporary project path."""
     project_path = tmp_path / "dbt_project"
@@ -39,7 +39,7 @@ def dbt_project(tmp_path: Path) -> DbtProject:
     return DbtProject(project_path=project_path)
 
 
-@pytest.fixture()
+@pytest.fixture
 def sample_manifest() -> Any:
     """Fixture for loading a sample manifest.json."""
     manifest_path = Path("tests/resources/sample_project/target/manifest3.json")
@@ -50,7 +50,7 @@ def sample_manifest() -> Any:
         return json.load(f)
 
 
-@pytest.fixture()
+@pytest.fixture
 def tmp_manifest(tmp_path: Path, sample_manifest: str) -> Path:
     """Fixture for creating a temporary manifest.json for isolated tests."""
     sample_project = tmp_path / "sample_project"

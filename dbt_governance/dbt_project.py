@@ -1,13 +1,12 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Annotated, Any
 
 from dbt.cli.main import dbtRunner, dbtRunnerResult
 from dbt.contracts.graph.manifest import Manifest
 from dbt.graph.graph import Graph
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, PrivateAttr
-from typing_extensions import Annotated
 
 import dbt_governance.utils as utils
 from dbt_governance.logging_config import logger
@@ -23,10 +22,10 @@ class DbtProject(BaseModel):
 
     model_config = ConfigDict(strict=True)
 
-    project_path: Annotated[Union[str, Path], AfterValidator(utils.validate_dbt_path)] = Field(
+    project_path: Annotated[str | Path, AfterValidator(utils.validate_dbt_path)] = Field(
         ..., description="Path to the dbt project root directory."
     )
-    _manifest: Optional[Manifest] = PrivateAttr(None)
+    _manifest: Manifest | None = PrivateAttr(None)
 
     @property
     def manifest(self) -> Manifest:
@@ -108,9 +107,9 @@ class DbtProject(BaseModel):
 
     def get_model_unique_ids_from_manifest(
         self,
-        full_selection_clause: Optional[str] = None,
-        select: Optional[str] = None,
-        exclude: Optional[str] = None,
+        full_selection_clause: str | None = None,
+        select: str | None = None,
+        exclude: str | None = None,
         force_parse: bool = False,
     ) -> tuple[bool, list[str]]:
         """

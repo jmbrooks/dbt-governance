@@ -1,5 +1,3 @@
-from typing import Optional, Union
-
 from dbt_governance.structures.validation_result import ValidationResult, ValidationStatus
 
 
@@ -8,7 +6,7 @@ def has_meta_property(
     manifest,
     project_path: str,
     meta_property_name: str,
-    meta_property_allowed_values: Optional[Union[list[str], str]] = None,
+    meta_property_allowed_values: list[str] | str | None = None,
 ) -> list[ValidationResult]:
     """Validate that all dbt models specify any required meta properties (and property values, if needed).
 

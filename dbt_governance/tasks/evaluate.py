@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 import yaml
 
@@ -46,7 +46,7 @@ def load_global_rules_config(rules_file: Path) -> dict[str, Any]:
 def evaluate_task(
     evaluate_run_instance: EvaluateRunner,
     rules: list[GovernanceRule],
-    project_paths: list[Union[str, Path]],
+    project_paths: list[str | Path],
     check_uuid: str,
     dbt_governance_version: str,
 ) -> GovernanceResult:

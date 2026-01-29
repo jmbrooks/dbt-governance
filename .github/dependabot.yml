@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # Security updates for Poetry dependencies
+  # Security updates for project dependencies
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -12,7 +12,7 @@ updates:
       prefix: "fix"
       include: scope
 
-  # Regular updates for Poetry dependencies
+  # Regular updates for project dependencies
   - package-ecosystem: "pip"
     directory: "/"
     schedule:

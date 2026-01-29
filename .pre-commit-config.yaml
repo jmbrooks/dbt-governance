@@ -1,49 +1,69 @@
 # Configuration for pre-commit hooks (see https://pre-commit.com/).
-# Eventually the hooks described here will be run as tests before merging each PR.
 
 default_language_version:
   python: python3
 
+exclude: |
+  ^(
+    env/|venv/|\.venv/|virtualenv/|
+    build/|dist/|
+    __pycache__/|
+    \.*_cache/|
+    \.tox/|
+    .*egg-info|
+    docs/_build/|
+    .coverage|
+    tmp/|temp/
+  )
+
 repos:
+  # --- Core hygiene -----------------------------------------------------------
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
-      - id: no-commit-to-branch  # main and master commits restricted
-      - id: check-ast
-      - id: check-case-conflict
-      - id: check-merge-conflict
-      - id: check-shebang-scripts-are-executable
-      - id: check-json
-      - id: check-toml
-      - id: check-yaml
-      - id: debug-statements
-      - id: detect-private-key
-      - id: name-tests-test
+      - id: no-commit-to-branch              # block direct commits to protected branches
+        args: [
+          --branch, master,                  # protect to avoid legacy default confusion
+          --branch, main,                    # protect default main (prod) env branch
+          --branch, test,                    # protect TEST env branch
+          --branch, dev,                     # protect DEV env branch
+        ]
+      - id: check-ast                        # all Python files are valid
+      - id: check-case-conflict              # file names are cross-filesystem compat
+      - id: check-docstring-first            # no code before docstrings
+      - id: check-executables-have-shebangs  # non-binary executables have a proper shebang
+      - id: check-merge-conflict             # files have no merge conflict strings
+      - id: check-shebang-scripts-are-executable # all scripts with shebangs are executable
+      - id: check-json                       # all JSON files are valid
+      - id: check-toml                       # all TOML files are valid
+      - id: check-yaml                       # all Yaml files are valid
+      - id: debug-statements                 # no debugger imports or breakpoint calls
+      - id: detect-private-key               # check for existence of private keys
+      - id: forbid-submodules                # no submodules in this repo
+      - id: name-tests-test                  # tests have proper test_ prefix
         args: [--pytest-test-first]
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
-        exclude_types:
-          - "markdown"
+      - id: end-of-file-fixer                # Files end in a newline and only a newline
+      - id: trailing-whitespace              # Remove trailing whitespace, cleaner diffs
+        exclude_types: [markdown]
+      - id: check-added-large-files          # keep big artifacts out of git
+        args: [--maxkb=1024]                 # adjust max size as needed (1024 KB)
+      - id: check-vcs-permalinks             # enforce permalinks in docs when linking code
 
-  - repo: local
+  # --- Formatting & linting ---------------------------------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.13.3
     hooks:
-      - id: ruff
-        name: Ruff Python code linting
-        entry: ruff
-        language: system
-        types_or: [ python, pyi ]
-        args: [ --fix ]
+      - id: ruff-format                      # run Ruff formatter
+        files: \.pyi?$
+      - id: ruff-check                       # run Ruff linter
+        args: [--fix]
+        files: \.pyi?$
 
-      - id: ruff-format
-        name: Ruff Python code formatting
-        entry: ruff
-        language: system
-        types_or: [ python, pyi ]
-
-      - id: poetry-check
-        name: poetry-check
-        entry: poetry check
-        language: system
-        pass_filenames: false
-        args:
-          - "--lock"
+  # --- Security: Python SAST --------------------------------------------------
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.6
+    hooks:
+      - id: bandit                           # identify insecure python patterns
+        args: ["--severity-level", "medium"] # all medium+ severity, no confidence filter
+        files: \.py$
+        exclude: ^(tests/|env/|venv/|\.venv/|virtualenv/|build/|dist/|\.*_cache/)

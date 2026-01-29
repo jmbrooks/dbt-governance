@@ -1,9 +1,11 @@
 # dbt-governance
 
-[![codecov](https://codecov.io/github/jmbrooks/dbt-governance/graph/badge.svg?token=0TS3TU8L39)](https://codecov.io/github/jmbrooks/dbt-governance)
+
+![License](https://img.shields.io/github/license/jmbrooks/dbt-governance)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
-![License](https://img.shields.io/github/license/jmbrooks/dbt-governance)
+[![CI checks](https://github.com/jmbrooks/dbt-governance/actions/workflows/pull-requests.yml/badge.svg?branch=main)](https://github.com/jmbrooks/dbt-governance/actions/workflows/pull-requests.yml.yml)
+[![codecov](https://codecov.io/github/jmbrooks/dbt-governance/graph/badge.svg?token=0TS3TU8L39)](https://codecov.io/github/jmbrooks/dbt-governance)
 
 **dbt-governance** is a flexible governance tool for [dbt](https://www.getdbt.com/) projects, enabling teams to define and enforce custom
 rules for data quality, privacy, security, and compliance.
@@ -13,10 +15,10 @@ for local development and planned compatibility with dbt Cloud.
 
 ## 🚧 Work in Progress 🚧
 
-This project is currently in **pre-alpha** and under active development.  
-⚠️ **Not ready for production use**. Expect frequent changes and potential breaking updates.  
+This project is currently in **pre-alpha** and under active development.
+⚠️ **Not ready for production use**. Expect frequent changes and potential breaking updates.
 
-We plan to make it more stable and production-ready by *April 2025*.  
+We plan to make it more stable and production-ready by *April 2026*.
 Contributions and feedback are welcome as we build this out!
 
 ## Basic Usage
@@ -28,7 +30,7 @@ for you. Some common examples that help teams evaluate project governance:
 2. Ensure all fact and dimension tables have at least one `recency` freshness test applied.
 3. Ensure all models in selected folders folder have a a test called `primary_key` applied on at least one column.
 4. Ensure all columns with property `contains_phi` also have property: `retention_policy`.
-5. Confirm if all dbt models that begin with `fct_` have the tag `fact` applied. 
+5. Confirm if all dbt models that begin with `fct_` have the tag `fact` applied.
 6. Ensure all dbt models and sources have an `owner` property assigned.
 
 dbt-governance has a series of such built-in rules, but is also extensible to allow for the construction of
