@@ -13,9 +13,9 @@ from dbt_governance.structures.validation_result import ValidationStatus
 from dbt_governance.tasks import evaluate_task, list_rules_task, validate_config_task
 
 
-@click.group(no_args_is_help=True)
+@click.group(invoke_without_command=True, no_args_is_help=True)
 @click.version_option(__version__, "--version", "-V", prog_name=constants.PROJECT_NAME)
-def cli() -> click.BaseCommand:
+def cli() -> None:
     """dbt Governance Tool: Manage and enforce governance rules for dbt projects."""
 
 
