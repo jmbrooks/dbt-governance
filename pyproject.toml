@@ -1,11 +1,13 @@
-[tool.poetry]
+[project]
 name = "dbt-governance"
 version = "0.1.0"
 description = "A flexible governance tool for dbt projects, enabling teams to define and enforce custom rules for data quality, privacy, security, and compliance."
-authors = ["Johnathan Brooks"]
+authors = [
+    {name = "JB Brooks"}
+]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/python-poetry/poetry"
+repository = "https://github.com/jmbrooks/dbt-governance"
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Environment :: Console",
@@ -14,7 +16,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -35,37 +36,52 @@ keywords = [
     "continuous integration",
 ]
 
-[tool.poetry.scripts]
+[project.scripts]
 dbt-governance = "dbt_governance.cli:cli"
 
-[tool.poetry.dependencies]
-# Compatible Python versions
-python = "^3.9"
-# Project dependencies
-dbt-core = "^1.6"
-jsonschema = "^4.19"
-pyyaml = "^6.0"
-colorama = "^0.4"
-pydantic = "^2.10"
-dbt-snowflake = "^1.9"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "dbt-core>=1.6,<2.0",
+    "jsonschema>=4.19,<5.0",
+    "pyyaml>=6.0,<7.0",
+    "colorama>=0.4,<1.0",
+    "pydantic>=2.10,<3.0",
+    "dbt-snowflake>=1.9,<2.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-bandit = "^1.7"
-mypy = "^1.8"
-pre-commit = "^4.0"
-pytest = "^8.3"
-pytest-cov = "^6.0"
-ruff = "^0.1"
-tox = "^4.5"
-types-colorama = "^0.4.15.20240106"
-types-PyYAML = "^6.0.12.12"
+[dependency-groups]
+dev = [
+    "bandit>=1.7",
+    "mypy>=1.8",
+    "pre-commit>=4.0",
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "ruff>=0.1",
+    "tox>=4.5",
+    "types-colorama>=0.4.15.20240106",
+    "types-PyYAML>=6.0.12.12",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv-build"]
+build-backend = "uv_build"
 
 [tool.bandit]
-exclude_dirs = ["data_build/", "logs/", "tests/", "env/", "venv/", "*venv/", ".env", ".env.*", ".git", ".tox/"]
+exclude_dirs = [
+  "*_cache",
+  ".coverage",
+  "logs/",
+  "*.log",
+  ".venv/",
+  "env/",
+  "venv/",
+  "virtualenv/",
+  "*venv/",
+  ".env",
+  ".env.*",
+  ".git",
+  ".tox/",
+]
 
 [tool.mypy]
 mypy_path = "./dbt_governance:./tests"
@@ -76,38 +92,50 @@ disallow_untyped_defs = true
 warn_unused_ignores = true
 
 [tool.ruff]
-line-length = 120
+line-length = 100
+exclude = [ ".venv", "build", "data", "dist", "results", "target" ]
+force-exclude = true
 
-[tool.ruff.lint]
-select = [
-    "E", # pep8 (pycodestyle) errors
-    "F", # pep8 (pyflakes) formatting errors
-    "N", # pep8 naming convention violations
-    "W", # pep8 (pycodestyle) warnings
-    "B", # flake8-bugbear design issues
-    "C4", # flake8-comprehensions issues
-    "ISC", # flake8 implicit string concat issues
-    "Q", # flake8-quotes quote issues
-    "RSE", # flake8-raise raise exception issues
-    "T10", # flake8 debugger
-    "T20", # flake8 print usage issues
-    "PTH", # flake8 path over os issues
-    "RET", # flake8 return issues
-    "SLF", # flake8 self issues
-    "YTT", # flake8-2020 sys version info issues
-    "PIE", # flake8 misc linting issues
-    "I", # isort import issues
-    "PGH", # pygrep-hooks issues
-    "TID", # tidy import flags
-    "FLY", # flynt f-string usage issues
-    "PERF", # perflint performance issues
-    "PT", # pytest style and usage issues
-    "PD", # pandas vet issues
-    "RUF", # ruff issues
+format.indent-style = "space"
+format.quote-style = "double"
+lint.select = [
+  "AIR",  # Airflow issues
+  "B",    # flake8-bugbear design issues
+  "C4",   # flake8-comprehensions issues
+  "E",    # pep8 (pycodestyle) errors
+  "F",    # pep8 (pyflakes) formatting errors
+  "FAST", # FastAPI issues
+  "FLY",  # flynt f-string usage issues
+  "I",    # isort import issues
+  "ISC",  # flake8 implicit string concat issues
+  "N",    # pep8 naming convention violations
+  "PD",   # pandas vet issues
+  "PERF", # perflint performance issues
+  "PGH",  # pygrep-hooks issues
+  "PIE",  # flake8 misc linting issues
+  "PT",   # pytest style and usage issues
+  "PTH",  # flake8 path over os issues
+  "Q",    # flake8-quotes quote issues
+  "RET",  # flake8 return issues
+  "RSE",  # flake8-raise raise exception issues
+  "RUF",  # ruff issues
+  "SLF",  # flake8 self issues
+  "T10",  # flake8 debugger
+  "T20",  # flake8 print usage issues
+  "TD",   # flake8 TODOs issues
+  "TID",  # tidy import flags
+  "UP",   # pyupgrade syntax issues
+  "W",    # pep8 (pycodestyle) warnings
+  "YTT",  # flake8-2020 sys version info issues
 ]
-ignore = [
-    "ISC001", # Implicit string concatenation, conflicts with formatting config
+lint.ignore = [
+  "ISC001", # Implicit string concatenation, conflicts with formatting config
+  "TD003",  # TODOs permissible without issue links
 ]
+
+[tool.pydoclint]
+style = "google"
+check-return-types = false
 
 [tool.pytest.ini_options]
 minversion = "7.0"
