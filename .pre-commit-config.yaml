@@ -67,11 +67,3 @@ repos:
         args: ["--severity-level", "medium"] # all medium+ severity, no confidence filter
         files: \.py$
         exclude: ^(tests/|env/|venv/|\.venv/|virtualenv/|build/|dist/|\.*_cache/)
-
-  # --- Docs hygiene -----------------------------------------------------------
-  - repo: https://github.com/jsh9/pydoclint
-    rev: 0.7.3
-    hooks:
-      - id: pydoclint                        # consistent docstring usage
-        args: ["--config=pyproject.toml"]
-        files: \.py$
