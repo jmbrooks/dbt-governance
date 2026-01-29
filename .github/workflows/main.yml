@@ -1,3 +1,9 @@
+# Workflow Configuration
+#
+# This workflow runs on every push to the main branch and:
+#   - Runs all project tests via pytest
+#   - Uploads test coverage report to Codecov
+
 name: Main branch deploy steps
 
 on:
