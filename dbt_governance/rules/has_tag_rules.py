@@ -1,5 +1,3 @@
-from typing import Optional
-
 from dbt_governance.structures.evaluate_runner import EvaluateRunner
 from dbt_governance.structures.validation_result import ValidationResult
 
@@ -10,9 +8,9 @@ def has_tag(
     manifest,
     project_path: str,
     tag_name: str,
-    column_check_type: Optional[str] = None,
-    select: Optional[str] = None,
-    match_type: Optional[str] = None,
+    column_check_type: str | None = None,
+    select: str | None = None,
+    match_type: str | None = None,
 ) -> list[ValidationResult]:
     """Validate that all dbt models specify any required tags.
 

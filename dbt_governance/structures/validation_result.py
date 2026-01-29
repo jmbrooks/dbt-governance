@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Annotated, Any, Optional, Union
+from typing import Annotated, Any
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
@@ -52,7 +52,7 @@ class ValidationResult(BaseModel):
 
     rule_name: str = Field(..., description="The name of the rule being validated.")
 
-    dbt_project_path: Annotated[Union[str, Path], AfterValidator(utils.validate_dbt_path)] = Field(
+    dbt_project_path: Annotated[str | Path, AfterValidator(utils.validate_dbt_path)] = Field(
         ..., description="The path to the dbt project directory."
     )
     resource_type: str = Field(..., description="The type of resource being validated.")
@@ -61,7 +61,7 @@ class ValidationResult(BaseModel):
     rule_severity: Severity = Field(
         default=Severity.default_rule_severity(), description="The severity of the rule based on the validation status"
     )
-    reason: Optional[str] = Field(None, description="An optional explanation for the validation status.")
+    reason: str | None = Field(None, description="An optional explanation for the validation status.")
 
     def to_dict(self) -> dict[str, Any]:
         """Convert the ValidationResult to a dictionary for JSON serialization."""

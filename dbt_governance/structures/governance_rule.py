@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -8,7 +8,7 @@ from dbt_governance.structures.severity import Severity
 
 class GovernanceRuleCheckType(BaseModel):
     type: str
-    description: Optional[str] = None
+    description: str | None = None
 
 
 class GovernanceRule(BaseModel):
@@ -20,9 +20,9 @@ class GovernanceRule(BaseModel):
     type: str = Field(..., description="The type of evaluation rule.")
     description: str = Field(..., description="A description of the rule.")
     severity: Severity = Field(..., description="The severity level of the rule.")
-    enabled: Optional[bool] = Field(True, description="Whether the rule is enabled.")
-    args: Optional[dict[str, Any]] = Field(None, description="Test-specific arguments or argument scope configuration.")
-    paths: Optional[list[str]] = Field(None, description="Affected paths (e.g., folders/models).")
+    enabled: bool | None = Field(True, description="Whether the rule is enabled.")
+    args: dict[str, Any] | None = Field(None, description="Test-specific arguments or argument scope configuration.")
+    paths: list[str] | None = Field(None, description="Affected paths (e.g., folders/models).")
 
     @classmethod
     def from_dict(cls, rule_data: dict[str, Any]) -> "GovernanceRule":

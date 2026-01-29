@@ -1,8 +1,6 @@
 from pathlib import Path
 from unittest.mock import MagicMock
 
-import pytest
-
 from dbt_governance.structures.evaluate_runner import EvaluateRunner
 from dbt_governance.structures.governance_result import GovernanceResult
 from dbt_governance.structures.governance_rule import GovernanceRule

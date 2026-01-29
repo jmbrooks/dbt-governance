@@ -1,11 +1,11 @@
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any
 from uuid import uuid4
 
 
-def assemble_dbt_selection_clause(select_clause: Optional[str] = None, exclude_clause: Optional[str] = None) -> str:
+def assemble_dbt_selection_clause(select_clause: str | None = None, exclude_clause: str | None = None) -> str:
     """Assemble a dbt selection clause from select and exclude clauses.
 
     Args:
@@ -46,7 +46,7 @@ def get_uuid() -> str:
     return str(uuid4())
 
 
-def validate_path(path: Union[str, Path]) -> Path:
+def validate_path(path: str | Path) -> Path:
     """Validate a path string or Path object, returning a Path object.
 
     Args:
@@ -63,7 +63,7 @@ def validate_path(path: Union[str, Path]) -> Path:
     return Path(path) if isinstance(path, str) else path
 
 
-def validate_dbt_path(path: Union[str, Path]) -> Path:
+def validate_dbt_path(path: str | Path) -> Path:
     """Validate a dbt project path string or Path object, returning a Path object.
 
     Args:
@@ -81,7 +81,7 @@ def validate_dbt_path(path: Union[str, Path]) -> Path:
     return path
 
 
-def write_json_result(results_data: dict[str, Any], output_file_path: Union[str, Path]) -> Path:
+def write_json_result(results_data: dict[str, Any], output_file_path: str | Path) -> Path:
     """Write data to JSON file with consistent formatting, and return the successfully-written-to output path.
 
     Args:

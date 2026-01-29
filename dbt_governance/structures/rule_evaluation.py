@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Annotated, Optional, Union
+from typing import Annotated
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
@@ -14,20 +14,20 @@ class RuleEvaluation(BaseModel):
     model_config = ConfigDict(strict=True)
 
     rule: GovernanceRule = Field(..., description="The governance rule being evaluated.")
-    dbt_project_path: Annotated[Union[str, Path], AfterValidator(utils.validate_dbt_path)] = Field(
+    dbt_project_path: Annotated[str | Path, AfterValidator(utils.validate_dbt_path)] = Field(
         ..., description="Path to the dbt project root directory."
     )
     dbt_project_version: str = Field(..., description="The dbt version for the project being evaluated.")
     dbt_project_manifest_generated_at: str = Field(
         ..., description="The timestamp when the dbt project manifest was generated."
     )
-    dbt_selection_syntax: Optional[str] = Field(
+    dbt_selection_syntax: str | None = Field(
         None, description="The dbt selection syntax used to get dbt nodes to evaluate."
     )
-    evaluate_dbt_nodes: Optional[list[str]] = Field(
+    evaluate_dbt_nodes: list[str] | None = Field(
         [], description="The dbt nodes that will be / were evaluated by the rule this run."
     )
-    validation_results: Optional[list[ValidationResult]] = Field(
+    validation_results: list[ValidationResult] | None = Field(
         [], description="The results of the rule validation runs."
     )
 

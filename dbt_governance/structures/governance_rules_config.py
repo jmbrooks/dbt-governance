@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
@@ -14,11 +14,11 @@ class PassRateAcceptanceThresholdsConfig(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    overall: Optional[float] = Field(None, description="The overall pass rate threshold.")
-    critical: Optional[float] = Field(None, description="The pass rate threshold for critical rules.")
-    high: Optional[float] = Field(None, description="The pass rate threshold for high severity rules.")
-    medium: Optional[float] = Field(None, description="The pass rate threshold for medium severity rules.")
-    low: Optional[float] = Field(None, description="The pass rate threshold for low severity rules.")
+    overall: float | None = Field(None, description="The overall pass rate threshold.")
+    critical: float | None = Field(None, description="The pass rate threshold for critical rules.")
+    high: float | None = Field(None, description="The pass rate threshold for high severity rules.")
+    medium: float | None = Field(None, description="The pass rate threshold for medium severity rules.")
+    low: float | None = Field(None, description="The pass rate threshold for low severity rules.")
 
     @classmethod
     def from_dict(cls, thresholds_config_data: dict[str, float]) -> "PassRateAcceptanceThresholdsConfig":
@@ -45,7 +45,7 @@ class RuleEvaluationConfig(BaseModel):
     """
 
     default_severity: str = Field(Severity.default_rule_severity(), description="The default severity level for rules.")
-    pass_rate_acceptance_thresholds: Optional[PassRateAcceptanceThresholdsConfig] = Field(
+    pass_rate_acceptance_thresholds: PassRateAcceptanceThresholdsConfig | None = Field(
         None, description="Pass rate acceptance thresholds."
     )
 
@@ -76,7 +76,7 @@ class GovernanceRulesConfig(BaseModel):
 
     @classmethod
     def from_yaml_file(
-        cls, rules_file: Optional[Union[str, Path]], include_not_enabled: bool = False
+        cls, rules_file: str | Path | None, include_not_enabled: bool = False
     ) -> "GovernanceRulesConfig":
         """Load governance rules and thresholds from a YAML file.
 
