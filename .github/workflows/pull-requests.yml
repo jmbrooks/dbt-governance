@@ -60,7 +60,5 @@ jobs:
         run: uvx --from pre-commit pre-commit run --all-files --show-diff-on-failure
 
       - name: Run tests via tox
-        run: |-
-          . venv/bin/activate
-          tox
+        run: uvx --from tox tox
         timeout-minutes: 5
