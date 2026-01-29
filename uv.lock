@@ -565,22 +565,22 @@ requires-dist = [
     { name = "colorama", specifier = ">=0.4,<1.0" },
     { name = "dbt-core", specifier = ">=1.6,<2.0" },
     { name = "dbt-snowflake", specifier = ">=1.9,<2.0" },
-    { name = "jsonschema", specifier = ">=4.19,<5.0" },
-    { name = "pydantic", specifier = ">=2.10,<3.0" },
+    { name = "jsonschema", specifier = ">=4.26,<5.0" },
+    { name = "pydantic", specifier = ">=2.12,<3.0" },
     { name = "pyyaml", specifier = ">=6.0,<7.0" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bandit", specifier = ">=1.7" },
-    { name = "mypy", specifier = ">=1.8" },
-    { name = "pre-commit", specifier = ">=4.0" },
-    { name = "pytest", specifier = ">=8.3" },
-    { name = "pytest-cov", specifier = ">=6.0" },
-    { name = "ruff", specifier = ">=0.1" },
-    { name = "tox", specifier = ">=4.5" },
-    { name = "types-colorama", specifier = ">=0.4.15.20240106" },
-    { name = "types-pyyaml", specifier = ">=6.0.12.12" },
+    { name = "bandit", specifier = ">=1.9" },
+    { name = "mypy", specifier = ">=1.19" },
+    { name = "pre-commit", specifier = ">=4.5" },
+    { name = "pytest", specifier = ">=9.0" },
+    { name = "pytest-cov", specifier = ">=7.0" },
+    { name = "ruff", specifier = ">=0.14" },
+    { name = "tox", specifier = ">=4.34" },
+    { name = "types-colorama", specifier = ">=0.4.15" },
+    { name = "types-pyyaml", specifier = ">=6.0.12" },
 ]
 
 [[package]]

@@ -36,35 +36,35 @@ keywords = [
     "continuous integration",
 ]
 
-[project.scripts]
-dbt-governance = "dbt_governance.cli:cli"
-
 requires-python = ">=3.10,<3.14"
 dependencies = [
     "dbt-core>=1.6,<2.0",
-    "jsonschema>=4.19,<5.0",
+    "jsonschema>=4.26,<5.0",
     "pyyaml>=6.0,<7.0",
     "colorama>=0.4,<1.0",
-    "pydantic>=2.10,<3.0",
+    "pydantic>=2.12,<3.0",
     "dbt-snowflake>=1.9,<2.0",
 ]
 
+[project.scripts]
+dbt-governance = "dbt_governance.cli:cli"
+
 [dependency-groups]
 dev = [
-    "bandit>=1.7",
-    "mypy>=1.8",
-    "pre-commit>=4.0",
-    "pytest>=8.3",
-    "pytest-cov>=6.0",
-    "ruff>=0.1",
-    "tox>=4.5",
-    "types-colorama>=0.4.15.20240106",
-    "types-PyYAML>=6.0.12.12",
+    "bandit>=1.9",
+    "mypy>=1.19",
+    "pre-commit>=4.5",
+    "pytest>=9.0",
+    "pytest-cov>=7.0",
+    "ruff>=0.14",
+    "tox>=4.34",
+    "types-colorama>=0.4.15",
+    "types-PyYAML>=6.0.12",
 ]
 
 [build-system]
-requires = ["uv-build"]
-build-backend = "uv_build"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.bandit]
 exclude_dirs = [
@@ -99,12 +99,10 @@ force-exclude = true
 format.indent-style = "space"
 format.quote-style = "double"
 lint.select = [
-  "AIR",  # Airflow issues
   "B",    # flake8-bugbear design issues
   "C4",   # flake8-comprehensions issues
   "E",    # pep8 (pycodestyle) errors
   "F",    # pep8 (pyflakes) formatting errors
-  "FAST", # FastAPI issues
   "FLY",  # flynt f-string usage issues
   "I",    # isort import issues
   "ISC",  # flake8 implicit string concat issues
