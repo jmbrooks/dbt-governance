@@ -18,7 +18,7 @@ for local development and planned compatibility with dbt Cloud.
 This project is currently in **pre-alpha** and under active development.
 ⚠️ **Not ready for production use**. Expect frequent changes and potential breaking updates.
 
-We plan to make it more stable and production-ready by *April 2025*.
+We plan to make it more stable and production-ready by *April 2026*.
 Contributions and feedback are welcome as we build this out!
 
 ## Basic Usage
